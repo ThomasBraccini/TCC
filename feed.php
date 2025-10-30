@@ -9,22 +9,23 @@ require_once "conexao.php";
 // Mensagens de feedback
 $mensagem = '';
 if (isset($_GET['success'])) {
-    $mensagem = '<div class="card-panel green lighten-4 green-text text-darken-1">'
-        . htmlspecialchars($_GET['success']) . '</div>';
+    $mensagem = '<div class="card-panel green lighten-4 green-text text-darken-1">'. htmlspecialchars($_GET['success']) . '</div>';
 }
 if (isset($_GET['error'])) {
-    $mensagem = '<div class="card-panel red lighten-4 red-text text-darken-2">'
-        . htmlspecialchars($_GET['error']) . '</div>';
+    $mensagem = '<div class="card-panel red lighten-4 red-text text-darken-2">'. htmlspecialchars($_GET['error']) . '</div>';
 }
 
 // Busca publicações
-$sql = "SELECT p.*, u.nome as nome_usuario 
-        FROM publicacao p 
-        INNER JOIN usuario u ON p.id_usuario_fk = u.id_usuario 
-        WHERE p.deleted_at IS NULL 
-        ORDER BY p.data_publicacao DESC";
-$result = mysqli_query($conexao, $sql);
-$publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
+// 1. BUSCA TODAS AS PUBLICAÇÕES ATIVAS
+$sql = "SELECT publicacao.titulo,publicacao.caminho_arquivo,publicacao.tipo_arquivo,publicacao.data_publicacao,usuario.nomeFROM publicacaoJOIN usuario ON publicacao.id_usuario_fk = usuario.id_usuarioWHERE publicacao.deleted_at IS NULL";
+
+$resultado = mysqli_query($conexao, $sql);
+$lista = [];
+
+// 2. PEGA CADA PUBLICAÇÃO UMA POR UMA
+while ($item = mysqli_fetch_assoc($resultado)) {
+    $lista[] = $item;
+}
 ?>
 
 <!DOCTYPE html>
@@ -33,11 +34,9 @@ $publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>NAC Portal - Feed</title>
-
     <!-- Material Icons + CSS -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
-    
     <style>
         .feed-card {
             height: 100%;
@@ -124,6 +123,27 @@ $publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 padding: 0 0.75rem;
             }
         }
+        .feed-audio-container {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom: 3px solid #00695c;
+        }
+        .audio-icon {
+            font-size: 4rem;
+            color: #00695c;
+            margin-bottom: 1rem;
+        }
+        .feed-audio {
+            width: 80%;
+            max-width: 300px;
+            height: 40px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -153,26 +173,29 @@ $publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 ?>
                 <div class="<?php echo $colClass; ?>" style="padding: 0.75rem;">
                     <div class="card feed-card">
-
                         <!-- MÍDIA: IMAGEM OU VÍDEO -->
                         <?php if ($publicacao['tipo_arquivo'] == 'imagem'): ?>
                             <div class="feed-media-container">
-                                <img src="uploads/<?php echo htmlspecialchars($publicacao['caminho_arquivo']); ?>" 
-                                     class="feed-img materialboxed" 
-                                     alt="<?php echo htmlspecialchars($publicacao['titulo']); ?>">
+                                <img src="uploads/<?php echo htmlspecialchars($publicacao['caminho_arquivo']); ?>" class="feed-img materialboxed" alt="<?php echo htmlspecialchars($publicacao['titulo']); ?>">
                             </div>
-
                         <?php elseif ($publicacao['tipo_arquivo'] == 'video'): ?>
                             <div class="feed-media-container">
-                                <video class="feed-video" controls preload="metadata"
-                                       poster="uploads/thumbnail_<?php echo pathinfo($publicacao['caminho_arquivo'], PATHINFO_FILENAME); ?>.jpg">
+                                <video class="feed-video" controls preload="metadata"poster="uploads/thumbnail_<?php echo pathinfo($publicacao['caminho_arquivo'], PATHINFO_FILENAME); ?>.jpg">
                                     <source src="uploads/<?php echo htmlspecialchars($publicacao['caminho_arquivo']); ?>" type="video/mp4">
                                     Seu navegador não suporta vídeo.
                                 </video>
                                 <i class="material-icons play-icon">play_circle_filled</i>
                             </div>
+                        <?php elseif ($publicacao['tipo_arquivo'] == 'audio'): ?>
+                            <div class="feed-audio-container">
+                                <i class="material-icons audio-icon">audiotrack</i>
+                                <audio class="feed-audio" controls>
+                                    <source src="uploads/<?php echo htmlspecialchars($publicacao['caminho_arquivo']); ?>" type="audio/mpeg">
+                                    <source src="uploads/<?php echo htmlspecialchars($publicacao['caminho_arquivo']); ?>" type="audio/wav">
+                                    Seu navegador não suporta áudio.
+                                </audio>
+                            </div>
                         <?php endif; ?>
-
                         <!-- CONTEÚDO -->
                         <div class="card-content-feed">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
@@ -183,17 +206,14 @@ $publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                     <?php echo date('d/m/Y', strtotime($publicacao['data_publicacao'])); ?>
                                 </span>
                             </div>
-
                             <h3 class="card-title-feed"><?php echo htmlspecialchars($publicacao['titulo']); ?></h3>
                             <p class="feed-description">
                                 <?php echo htmlspecialchars($publicacao['descricao']); ?>
                             </p>
-
                             <!-- BOTÃO EXCLUIR -->
                             <?php if ($publicacao['id_usuario_fk'] == $_SESSION['user_id']): ?>
                                 <div class="delete-btn">
-                                    <a href="#modal-delete-<?php echo $publicacao['id_publicacao']; ?>" 
-                                       class="modal-trigger btn-small red waves-effect waves-light">
+                                    <a href="#modal-delete-<?php echo $publicacao['id_publicacao']; ?>" class="modal-trigger btn-small red waves-effect waves-light">
                                         <i class="material-icons left">delete</i> Excluir
                                     </a>
                                 </div>
@@ -201,26 +221,23 @@ $publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         </div>
                     </div>
                 </div>
-
                 <!-- MODAL EXCLUIR -->
                 <?php if ($publicacao['id_usuario_fk'] == $_SESSION['user_id']): ?>
                     <div id="modal-delete-<?php echo $publicacao['id_publicacao']; ?>" class="modal">
-                        <div class="modal-content red-text text-darken-2">
+                        <div>
                             <h5>Excluir Publicação?</h5>
                             <p>Você está prestes a <strong>excluir permanentemente</strong>:</p>
                             <p class="truncate"><strong>"<?php echo htmlspecialchars($publicacao['titulo']); ?>"</strong></p>
                             <p><small>Esta ação não pode ser desfeita.</small></p>
                         </div>
                         <div class="modal-footer">
-                            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-                            <a href="upload_arquivos/excluir_publicacao.php?id=<?php echo $publicacao['id_publicacao']; ?>" 
-                               class="btn red waves-effect waves-light">
+                            <a href="#!" class="modal-close waves-effect btn-flat">Cancelar</a>
+                            <a href="upload_arquivos/excluir_publicacao.php?id=<?php echo $publicacao['id_publicacao']; ?>" class="btn red waves-effect waves-light">
                                 <i class="material-icons left">delete</i> Confirmar
                             </a>
                         </div>
                     </div>
                 <?php endif; ?>
-
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -230,13 +247,7 @@ $publicacoes = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script type="text/javascript" src="js/materialize.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializa modais
         M.Modal.init(document.querySelectorAll('.modal'), { opacity: 0.7 });
-
-        // Inicializa zoom em imagens
-        M.Materialbox.init(document.querySelectorAll('.materialboxed'));
-
-        // Remove ícone de play ao reproduzir
         document.querySelectorAll('video').forEach(video => {
             video.addEventListener('play', function() {
                 const icon = this.parentElement.querySelector('.play-icon');
