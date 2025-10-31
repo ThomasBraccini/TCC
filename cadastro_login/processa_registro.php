@@ -59,7 +59,9 @@ $codigo = rand(100000, 999999);
 $expira_em = time() + 300;
 $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-$sql = "INSERT INTO usuario (nome, email, senha,preferencias, verificado, codigo_verificacao, codigo_expira_em) VALUES ('$nome', '$email', '$senhaHash', 0, $codigo, $expira_em)";
+$sql = "INSERT INTO usuario 
+        (nome, email, senha, preferencias, verificado, codigo_verificacao, codigo_expira_em) 
+        VALUES ('$nome', '$email', '$senhaHash', '$preferencias', 0, $codigo, $expira_em)";
 $resultado = mysqli_query($conexao, $sql);
 if (!$resultado) {
     die("Erro ao cadastrar: " . mysqli_error($conexao));
