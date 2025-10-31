@@ -1,0 +1,230 @@
+/* Feed Styles */
+        .feed-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .feed-card:hover {
+            transform: translateY(-4px);
+        }
+        .feed-media-container {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            background: #000;
+        }
+        .feed-img, .feed-video {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: rgba(255,255,255,0.8);
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+        .card-content-feed {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+        .card-title-feed {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #00695c;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.3;
+        }
+        .autor-chip {
+            background: #00695c;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            height: 28px;
+            line-height: 28px;
+            padding: 0 10px;
+            border-radius: 14px;
+            display: inline-block;
+        }
+        .feed-description {
+            flex-grow: 1;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #555;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+        }
+        /* === ALTERAÇÃO PRINCIPAL: garante espaço reservado para o botão excluir === */
+        .delete-btn {
+            margin-top: 0.75rem;
+            text-align: right;
+            /* Reserva altura mínima para todos os cards acomodarem o botão */
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .delete-placeholder {
+            /* ocupa o mesmo espaço do botão, mas fica invisível */
+            visibility: hidden;
+            height: 36px;
+            width: auto;
+        }
+        .no-content {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        /* Força 3 colunas em desktop */
+        @media (min-width: 992px) {
+            .feed-col {
+                width: 33.333%;
+                padding: 0 0.75rem;
+                box-sizing: border-box;
+            }
+        }
+        .feed-audio-container {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom: 3px solid #00695c;
+        }
+        .audio-icon {
+            font-size: 4rem;
+            color: #00695c;
+            margin-bottom: 1rem;
+        }
+        .feed-audio {
+            width: 80%;
+            max-width: 300px;
+            height: 40px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    /*Fecha feed styles*/
+
+    /* Header Styles */
+            .nav-wrapper .input-field {
+            margin: 0 10px;
+        }
+        .nav-wrapper .input-field input {
+            height: 2.5rem;
+            font-size: 0.9rem;
+        }
+        .nav-wrapper .brand-logo {
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+        .nav-wrapper i {
+            height: 2.5rem;
+            line-height: 2.5rem;
+        }
+        @media (max-width: 600px) {
+            .hide-on-mobile { display: none !important; }
+            .brand-logo { font-size: 1.1rem !important; }
+            .nav-wrapper .input-field { margin: 0 5px; }
+            .nav-wrapper .input-field input { width: 100px !important; }
+        }
+    /* Fecha Header Styles */
+    /* Login pagina Styles */
+            body {
+            background: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .logo-if img {
+            height: 60px;
+            margin-right: 15px;
+        }
+        .logo-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.4rem;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .title-nac {
+            background: #00897b; 
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 420px;
+        }
+        .login-title {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #00695c;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .input-field input {
+            font-size: 1rem !important;
+            padding: 0 1rem !important;
+        }
+        .input-field label {
+            color: #555;
+            font-size: 1rem;
+        }
+        .btn-login {
+            background: #00897b;
+            width: 100%;
+            height: 48px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0;
+        }
+        .btn-login:hover {
+            background: #00695c;
+        }
+        .login-links {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .login-links a {
+            color: #00897b;
+            font-size: 0.95rem;
+            display: block;
+            margin: 0.5rem 0;
+        }
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+    /* Fecha Login pagina Styles */

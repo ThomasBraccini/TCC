@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $titulo = $_POST["titulo"];
 $descricao = $_POST["descricao"];
-$visibilidade = $_POST["visibilidade"];
 $id_usuario = $_SESSION['user_id'];
 
 // Processamento do arquivo
@@ -48,7 +47,7 @@ $feitoUpload = move_uploaded_file($_FILES["arquivo"]["tmp_name"], $pasta . $nome
 
 if ($feitoUpload) {
     // CORREÇÃO: Nome correto da tabela - apenas "publicacao"
-    $sql = "INSERT INTO publicacao (id_usuario_fk, titulo, descricao, caminho_arquivo, tipo_arquivo, mime_type, tamanho_bytes, visibilidade, data_publicacao) VALUES ('$id_usuario', '$titulo', '$descricao', '$nomeArquivoExtensao', '$tipo_arquivo', '" . $_FILES["arquivo"]["type"] . "', '" . $_FILES["arquivo"]["size"] . "', '$visibilidade', NOW())";
+    $sql = "INSERT INTO publicacao (id_usuario_fk, titulo, descricao, caminho_arquivo, tipo_arquivo, mime_type, tamanho_bytes, data_publicacao) VALUES ('$id_usuario', '$titulo', '$descricao', '$nomeArquivoExtensao', '$tipo_arquivo', '" . $_FILES["arquivo"]["type"] . "', '" . $_FILES["arquivo"]["size"] . "', NOW())";
     
     if (mysqli_query($conexao, $sql)) {
         header("Location: publicar_arte.php?success=Obra publicada com sucesso!");
