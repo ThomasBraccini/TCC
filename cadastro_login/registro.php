@@ -23,7 +23,7 @@ session_start();
         <label for="confirm_senha">Confirmar senha:</label><br>
         <input type="password" name="confirma_senha" id="confirm_senha" required minlength="8"><br><br>
 
-        <label for="preferencias">Preferências (opcional):</label><br>
+        <label for="preferencias">Bio (opcional):</label><br>
         <textarea name="preferencias" id="preferencias" rows="4" cols="40"></textarea><br><br>
 
         <input type="submit" value="Cadastrar">
