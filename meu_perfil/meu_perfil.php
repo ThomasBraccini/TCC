@@ -8,16 +8,12 @@ if (!isset($_SESSION['user_id'])) {
 $sql_usuario = "SELECT 
                     nome, 
                     email, 
-                    preferencias
+                    preferencias,
+                    foto_perfil
                 FROM usuario 
-                WHERE id_usuario = {$_SESSION['user_id']} 
+                WHERE id_usuario = " . $_SESSION['user_id'] . "
                 AND deleted_at IS NULL";
 $dados_usuario = mysqli_query($conexao, $sql_usuario);
-if (!$dados_usuario || mysqli_num_rows($dados_usuario) === 0) {
-    session_destroy();
-    header("Location: ../index.php?error=Usuário não encontrado.");
-    exit;
-}
 $usuario = mysqli_fetch_assoc($dados_usuario);
 $preferencias = $usuario['preferencias'];
 $sql_publicacoes = "SELECT 
@@ -30,7 +26,7 @@ $sql_publicacoes = "SELECT
                     FROM publicacao 
                     WHERE id_usuario_fk = {$_SESSION['user_id']} 
                     AND deleted_at IS NULL
-                    ORDER BY data_publicacao DESC";
+                    ORDER BY data_publicacao";
 $dados_publicacoes = mysqli_query($conexao, $sql_publicacoes);
 $publicacoes = [];
 while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
@@ -50,21 +46,36 @@ while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
 <body>
 <?php include_once "../header.php"; ?>
 <main class="container">
-    <!-- PERFIL -->
+    <!-- PERFIL COM FOTO -->
     <div class="row">
         <div class="col s12">
             <div class="card">
                 <div class="card-content">
                     <div class="row">
+                        <!-- FOTO DE PERFIL -->
                         <div class="col s12 m3 center">
-                            <div class="avatar circle teal" style="width: 100px; height: 100px; line-height: 100px; font-size: 3rem; margin: 0 auto;">
-                            </div>
+                            <?php 
+                            $caminho_banco = $usuario['foto_perfil']; 
+                            $caminho_servidor = "../" . $caminho_banco;
+                            $tem_foto = !empty($caminho_banco) && file_exists($caminho_servidor);
+                            ?>
+                            <?php if ($tem_foto): ?>
+                                <img src="<?= htmlspecialchars($caminho_servidor) ?>" 
+                                    alt="Foto de perfil de <?= htmlspecialchars($usuario['nome']) ?>" 
+                                    class="circle" 
+                                    style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #009688;">
+                            <?php else: ?>
+                                <div class="circle teal" 
+                                    style="width: 100px; height: 100px; line-height: 100px; font-size: 2.5rem; color: white; margin: 0 auto;">
+                                </div>
+                            <?php endif; ?>
                         </div>
+                        <!-- INFORMAÇÕES -->
                         <div class="col s12 m9">
-                            <h4><?= $usuario['nome'] ?></h4>
-                            <p class="grey-text text-darken-1"><?= $usuario['email'] ?></p>
+                            <h4><?= htmlspecialchars($usuario['nome']) ?></h4>
+                            <p class="grey-text text-darken-1"><?= htmlspecialchars($usuario['email']) ?></p>
                             <?php if (!empty($preferencias)): ?>
-                                <p><?= nl2br($preferencias) ?></p>
+                                <p><?= nl2br(htmlspecialchars($preferencias)) ?></p>
                             <?php endif; ?>
                             <a href="../editar_perfil.php" class="btn waves-effect waves-light teal">Editar Perfil</a>
                         </div>
@@ -82,13 +93,15 @@ while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
             </ul>
         </div>
     </div>
-    <!-- MINHAS PUBLICAÇÕES-->
+    <!-- MINHAS PUBLICAÇÕES -->
     <div id="minhas" class="col s12">
         <?php if (empty($publicacoes)): ?>
             <div class="card-panel center no-content">
                 <i class="material-icons large grey-text">image_search</i>
                 <p>Você ainda não publicou nenhuma obra.</p>
-                <a href="../upload_arquivos/publicar_arte.php" class="btn waves-effect waves-light teal">Publicar sua primeira arte</a>
+                <a href="../upload_arquivos/publicar_arte.php" class="btn waves-effect waves-light teal">
+                    Publicar sua primeira arte
+                </a>
             </div>
         <?php else: ?>
             <div class="row" style="margin: 0 -0.75rem;">
@@ -100,16 +113,18 @@ while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
                     ?>
                     <div class="<?= $colClass ?>" style="padding: 0.75rem;">
                         <div class="card feed-card">
-                            <!-- MÍDIA (EXATAMENTE IGUAL AO FEED) -->
+                            <!-- MÍDIA -->
                             <?php if ($publicacao['tipo_arquivo'] == 'imagem'): ?>
                                 <div class="feed-media-container">
-                                    <img src="<?= $caminho ?>" class="feed-img materialboxed" alt="<?= $titulo ?>">
+                                    <img src="<?= htmlspecialchars($caminho) ?>" 
+                                        class="feed-img materialboxed" 
+                                        alt="<?= htmlspecialchars($titulo) ?>">
                                 </div>
                             <?php elseif ($publicacao['tipo_arquivo'] == 'video'): ?>
                                 <div class="feed-media-container">
                                     <video class="feed-video" controls preload="metadata" 
                                         poster="../uploads/thumbnail_<?= pathinfo($publicacao['caminho_arquivo'], PATHINFO_FILENAME) ?>.jpg">
-                                        <source src="<?= $caminho ?>" type="video/mp4">
+                                        <source src="<?= htmlspecialchars($caminho) ?>" type="video/mp4">
                                         Seu navegador não suporta vídeo.
                                     </video>
                                 </div>
@@ -117,23 +132,23 @@ while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
                                 <div class="feed-audio-container">
                                     <i class="material-icons audio-icon">audiotrack</i>
                                     <audio class="feed-audio" controls>
-                                        <source src="<?= $caminho ?>" type="audio/mpeg">
-                                        <source src="<?= $caminho ?>" type="audio/wav">
+                                        <source src="<?= htmlspecialchars($caminho) ?>" type="audio/mpeg">
+                                        <source src="<?= htmlspecialchars($caminho) ?>" type="audio/wav">
                                         Seu navegador não suporta áudio.
                                     </audio>
                                 </div>
                             <?php endif; ?>
-                            <!-- CONTEÚDO (IGUAL AO FEED) -->
+                            <!-- CONTEÚDO -->
                             <div class="card-content-feed">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span class="autor-chip"><?= $usuario['nome'] ?></span>
+                                    <span class="autor-chip"><?= htmlspecialchars($usuario['nome']) ?></span>
                                     <span class="grey-text text-darken-1" style="font-size: 0.8rem;">
                                         <?= $publicacao['data_pub_fmt'] ?>
                                     </span>
                                 </div>
-                                <h3 class="card-title-feed"><?= $titulo ?></h3>
+                                <h3 class="card-title-feed"><?= htmlspecialchars($titulo) ?></h3>
                                 <?php if (!empty($publicacao['descricao'])): ?>
-                                    <p class="feed-description"><?= nl2br($publicacao['descricao']) ?></p>
+                                    <p class="feed-description"><?= nl2br(htmlspecialchars($publicacao['descricao'])) ?></p>
                                 <?php endif; ?>
                                 <!-- BOTÃO EXCLUIR -->
                                 <div class="delete-btn">
@@ -150,7 +165,7 @@ while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
                         <div class="modal-content">
                             <h5>Excluir Publicação?</h5>
                             <p>Você está prestes a <strong>excluir permanentemente</strong>:</p>
-                            <p class="truncate"><strong>"<?= $titulo ?>"</strong></p>
+                            <p class="truncate"><strong>"<?= htmlspecialchars($titulo) ?>"</strong></p>
                             <p><small>Esta ação não pode ser desfeita.</small></p>
                         </div>
                         <div class="modal-footer">
