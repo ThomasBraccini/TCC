@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['user_id']) && !isset($_SESSION['modal_sucesso']) && !isset($_GET['email_verificado'])) {
     header("Location: feed.php"); 
     exit;
 }
@@ -43,10 +43,37 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
+
+    <!-- MODAL DE SUCESSO (ex: E-mail verificado) -->
+    <?php if (isset($_SESSION['modal_sucesso'])): 
+        $modal = $_SESSION['modal_sucesso'];
+        unset($_SESSION['modal_sucesso']);
+    ?>
+    <div id="modal-sucesso" class="modal">
+        <div class="modal-content center">
+            <h4 style="color: #00695c;"><?= $modal['titulo'] ?></h4>
+            <p><?= $modal['mensagem'] ?></p>
+        </div>
+        <div class="modal-footer">
+            <a href="<?= $modal['link'] ?>" class="modal-close waves-effect waves-green btn-flat">
+                <?= $modal['botao'] ?>
+            </a>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- JS -->
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             M.updateTextFields();
+
+            // ABRE O MODAL AUTOMATICAMENTE
+            <?php if (isset($modal)): ?>
+            var elem = document.getElementById('modal-sucesso');
+            var instance = M.Modal.init(elem, {dismissible: false});
+            instance.open();
+            <?php endif; ?>
         });
     </script>
 </body>

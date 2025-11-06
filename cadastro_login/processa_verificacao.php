@@ -66,8 +66,14 @@ if (mysqli_query($conexao, $update)) {
     
     unset($_SESSION['email_verificacao']);
     
-    header("Location: email_confirmado.php");
-    exit;
+    // MODAL DE SUCESSO (ADICIONADO)
+    $_SESSION['modal_sucesso'] = [
+        'titulo' => 'E-mail Verificado!',
+        'mensagem' => 'Seu e-mail foi verificado com sucesso. Agora você pode fazer login.',
+        'botao' => 'Ir para Login',
+        'link' => '../feed.php'
+    ];
+    header("Location: ../index.php?email_verificado=1");    exit;
 } else {
     header("Location: registro.php?error=Erro ao finalizar cadastro. Tente novamente.");
     exit;
