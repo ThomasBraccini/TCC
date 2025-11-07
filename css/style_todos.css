@@ -228,3 +228,10 @@
             text-decoration: underline;
         }
     /* Fecha Login pagina Styles */
+    /*Olho senha*/
+        #senha {
+            background-repeat: no-repeat;
+            background-position: right 40px center;
+            background-size: 25px;
+        }
+    /*Fecha olho senha*/

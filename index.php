@@ -18,13 +18,6 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="css/style_todos.css"/>
-    <style>
-        #senha {
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 25px;
-        }
-    </style>
 </head>
 <body>
     <h1 class="title-nac">NAC Portal</h1>
@@ -66,43 +59,44 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
             <a href="#" id="modalBotao" class="modal-close waves-effect waves-green btn-flat"></a>
         </div>
     </div>
+
     <script type="text/javascript" src="js/materialize.min.js"></script>
-    <script>
-        var senha = document.getElementById('senha');
-        senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";    
-        senha.onclick = function(event) {
-        var larguraCampo = senha.offsetWidth;
-        var posClique = event.offsetX;
-        if (larguraCampo - posClique < 65) 
-            {
-            if (senha.type === 'password') 
-                {
-                    senha.type = 'text';
-                    senha.style.backgroundImage = "url('./img_senha/olho_aberto.svg')";
-                } 
-                else
-                {
-                    senha.type = 'password';
-                    senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";
-                }
-            }
-            };
-    </script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-        var modalElems = document.querySelectorAll('.modal');
-        var modalInstances = M.Modal.init(modalElems);
-        <?php if (isset($_SESSION['modal_sucesso'])): ?>
-            var modalData = <?= json_encode($_SESSION['modal_sucesso']) ?>;
-            document.getElementById('modalTitulo').textContent = modalData.titulo;
-            document.getElementById('modalMensagem').textContent = modalData.mensagem;
-            document.getElementById('modalBotao').textContent = modalData.botao;
-            document.getElementById('modalBotao').href = modalData.link;
-            var modalInstance = M.Modal.getInstance(document.getElementById('modalSucesso'));
-            modalInstance.open();
-            <?php unset($_SESSION['modal_sucesso']); ?>
-        <?php endif; ?>
-    });
+            var senha = document.getElementById('senha');
+            senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";    
+            senha.onclick = function(event) {
+                var larguraCampo = senha.offsetWidth;
+                var posClique = event.offsetX;
+                if (larguraCampo - posClique < 65) {
+                    if (senha.type === 'password') {
+                        senha.type = 'text';
+                        senha.style.backgroundImage = "url('./img_senha/olho_aberto.svg')";
+                    } else {
+                        senha.type = 'password';
+                        senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";
+                    }
+                }
+            };
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modalElems = document.querySelectorAll('.modal');
+            var modalInstances = M.Modal.init(modalElems);
+            <?php if (isset($_SESSION['modal_sucesso'])): ?>
+                var modalData = <?= json_encode($_SESSION['modal_sucesso']) ?>;
+                document.getElementById('modalTitulo').textContent = modalData.titulo;
+                document.getElementById('modalMensagem').textContent = modalData.mensagem;
+                document.getElementById('modalBotao').textContent = modalData.botao;
+                document.getElementById('modalBotao').href = modalData.link;
+                var modalInstance = M.Modal.getInstance(document.getElementById('modalSucesso'));
+                modalInstance.open();
+                <?php unset($_SESSION['modal_sucesso']); ?>
+            <?php endif; ?>
+        });
     </script>
 </body>
 </html>
