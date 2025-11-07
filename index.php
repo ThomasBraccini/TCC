@@ -18,6 +18,13 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="css/style_todos.css"/>
+    <style>
+        #senha {
+            background-repeat: no-repeat;
+            background-position: right 40px center;
+            background-size: 25px;
+        }
+    </style>
 </head>
 <body>
     <h1 class="title-nac">NAC Portal</h1>

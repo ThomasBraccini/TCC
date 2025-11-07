@@ -10,8 +10,10 @@ require_once "../conexao.php";
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publicar Arte - NAC Portal</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../css/style_todos.css"/>
 </head>
 <body>
     <div>

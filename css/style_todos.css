@@ -120,7 +120,7 @@
     /*Fecha feed styles*/
 
     /* Header Styles */
-            .nav-wrapper .input-field {
+        .nav-wrapper .input-field {
             margin: 0 10px;
         }
         .nav-wrapper .input-field input {
@@ -136,10 +136,10 @@
             line-height: 2.5rem;
         }
         @media (max-width: 600px) {
-            .hide-on-mobile { display: none !important; }
-            .brand-logo { font-size: 1.1rem !important; }
+            .hide-on-mobile { display: none ; }
+            .brand-logo { font-size: 1.1rem ; }
             .nav-wrapper .input-field { margin: 0 5px; }
-            .nav-wrapper .input-field input { width: 100px !important; }
+            .nav-wrapper .input-field input { width: 100px ; }
         }
     /* Fecha Header Styles */
     /* Login pagina Styles */
@@ -195,8 +195,8 @@
             margin-bottom: 1.5rem;
         }
         .input-field input {
-            font-size: 1rem !important;
-            padding: 0 1rem !important;
+            font-size: 1rem ;
+            padding: 0 1rem ;
         }
         .input-field label {
             color: #555;

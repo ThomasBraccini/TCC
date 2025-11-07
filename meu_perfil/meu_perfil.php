@@ -108,7 +108,7 @@ while ($publicacao = mysqli_fetch_assoc($dados_publicacoes)) {
         <div class="col s12">
             <ul class="tabs">
                 <li class="tab col s6"><a class="active" href="#minhas">Minhas Publicações</a></li>
-                <li class="tab col s6"><a href="#curtidos">Vídeos Curtidos</a></li>
+                <li class="tab col s6"><a href="#curtidos">publicações Curtidas</a></li>
             </ul>
         </div>
     </div>

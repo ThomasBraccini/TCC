@@ -87,11 +87,18 @@ try {
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'thomas.silveira.braccini@gmail.com';
-    $mail->Password   = 'okau zbvu qcno nrqa';
+    $mail->Password   = 'bodw bnvt gqpe gkib';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
     $mail->CharSet = 'UTF-8';
     $mail->setFrom('noreply@nacportal.com', 'NAC Portal');
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
     $mail->addAddress($email, $nome);
     $mail->isHTML(true);
     $mail->Subject = 'Confirmação de Cadastro - NAC Portal';
@@ -103,7 +110,7 @@ try {
     exit;
 } catch (Exception $e) {
     $_SESSION['email_verificacao'] = $email;
-    header("Location: verificar_email.php?codigo=$codigo&error=Erro no e-mail. Use este código:");
+    header("Location: registro.php?codigo=$codigo&error=Erro no e-mail.");
     exit;
 }
 ?>

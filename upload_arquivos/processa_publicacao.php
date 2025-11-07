@@ -18,9 +18,8 @@ $nomeSeparado = explode('.', $nomeCompleto);
 $ultimaPosicao = count($nomeSeparado) - 1;
 $extensao = $nomeSeparado[$ultimaPosicao];
 $nomeArquivoExtensao = $nomeArquivo . "." . $extensao;
-$extensao = strtolower($extensao);  // MP4 → mp4
+$extensao = strtolower($extensao);
 $tiposPermitidos = ["jpg", "png", "jpeg", "gif", "mp4", "avi", "mp3", "wav"];
-
 if (!in_array($extensao, $tiposPermitidos)) {
     header("Location: publicar_arte.php?error=Extensão de arquivo não permitida");
     exit;
