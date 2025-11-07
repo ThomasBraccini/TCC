@@ -71,7 +71,7 @@ if (mysqli_query($conexao, $update)) {
         'titulo' => 'E-mail Verificado!',
         'mensagem' => 'Seu e-mail foi verificado com sucesso. Agora você pode fazer login.',
         'botao' => 'Ir para Login',
-        'link' => '../feed.php'
+        'link' => 'index.php'
     ];
     header("Location: ../index.php?email_verificado=1");    exit;
 } else {

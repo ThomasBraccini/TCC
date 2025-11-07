@@ -14,6 +14,13 @@ if (isset($_SESSION['user_id'])) {
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="../css/materialize.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="../css/style_todos.css"/>
+    <style>
+        #senha {
+            background-repeat: no-repeat;
+            background-position: right 40px center;
+            background-size: 25px;
+        }
+    </style>
 </head>
 <body>
     <h1 class="title-nac">NAC Portal</h1>
@@ -50,13 +57,13 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                     <!-- SENHA -->
                     <div class="input-field col s12">
-                        <input type="password" name="senha" id="senha" required class="validate" minlength="8"
+                        <input type="password" data-length="20" name="senha" id="senha" required class="validate" minlength="8"
                             placeholder="Senha">
                         <label for="senha">Senha (mín. 8 caracteres)</label>
                     </div>
                     <!-- CONFIRMAR SENHA -->
                     <div class="input-field col s12">
-                        <input type="password" name="confirma_senha" id="confirma_senha" required class="validate" minlength="8"
+                        <input type="password" data-length="20" name="confirma_senha" id="confirma_senha" required class="validate" minlength="8"
                             placeholder="Confirmar Senha">
                         <label for="confirma_senha">Confirmar Senha</label>
                     </div>
@@ -92,6 +99,29 @@ if (isset($_SESSION['user_id'])) {
     </div>
     <!-- JS -->
     <script type="text/javascript" src="../js/materialize.min.js"></script>
+        <script>
+            var campos = document.querySelectorAll('#senha');
+            M.CharacterCounter.init(campos);
+            var senha = document.getElementById('senha');
+            senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";    
+            senha.onclick = function(event) {
+                var larguraCampo = senha.offsetWidth;
+                var posClique = event.offsetX;
+                if (larguraCampo - posClique < 65) 
+                {
+                    if (senha.type === 'password') 
+                    {
+                        senha.type = 'text';
+                        senha.style.backgroundImage = "url('./img_senha/olho_aberto.svg')";
+                    } 
+                    else
+                    {
+                        senha.type = 'password';
+                        senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";
+                    }
+                }
+            };
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializa Materialize
@@ -106,7 +136,6 @@ if (isset($_SESSION['user_id'])) {
                     e.preventDefault();
                     M.toast({html: 'A senha deve ter no mínimo 8 caracteres!', classes: 'red'});
                 }
-                // Se tudo OK → envia para processa_registro.php
             });
         });
     </script>

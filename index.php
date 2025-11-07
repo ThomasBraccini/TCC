@@ -1,8 +1,12 @@
 <?php
 session_start();
-if (isset($_SESSION['user_id']) && !isset($_SESSION['modal_sucesso']) && !isset($_GET['email_verificado'])) {
-    header("Location: feed.php"); 
-    exit;
+if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
+    $_SESSION['modal_sucesso'] = [
+        'titulo' => 'E-mail Verificado!',
+        'mensagem' => 'Seu e-mail foi verificado com sucesso. Agora você pode fazer login.',
+        'botao' => 'Ir para Login',
+        'link' => 'feed.php'
+    ];
 }
 ?>
 <!DOCTYPE html>
@@ -14,6 +18,13 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['modal_sucesso']) && !isset(
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="css/style_todos.css"/>
+    <style>
+        #senha {
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 25px;
+        }
+    </style>
 </head>
 <body>
     <h1 class="title-nac">NAC Portal</h1>
@@ -23,11 +34,12 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['modal_sucesso']) && !isset(
             <form action="cadastro_login/processa_login.php" method="POST">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input type="email" name="email" id="email" required class="validate" placeholder="seu.email@iffarroupilha.edu.br">
+                        <input type="email" name="email" id="email" required class="validate" 
+                             placeholder="seu.email@iffarroupilha.edu.br">
                         <label for="email">E-mail</label>
                     </div>
                     <div class="input-field col s12">
-                        <input type="password" name="senha" id="senha" required class="validate">
+                        <input type="password" name="senha" id="senha" required class="validate" placeholder="Sua senha">
                         <label for="senha">Senha</label>
                     </div>
                     <div class="col s12">
@@ -44,37 +56,53 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['modal_sucesso']) && !isset(
         </div>
     </div>
 
-    <!-- MODAL DE SUCESSO (ex: E-mail verificado) -->
-    <?php if (isset($_SESSION['modal_sucesso'])): 
-        $modal = $_SESSION['modal_sucesso'];
-        unset($_SESSION['modal_sucesso']);
-    ?>
-    <div id="modal-sucesso" class="modal">
-        <div class="modal-content center">
-            <h4 style="color: #00695c;"><?= $modal['titulo'] ?></h4>
-            <p><?= $modal['mensagem'] ?></p>
+    <!-- Modal de Sucesso -->
+    <div id="modalSucesso" class="modal">
+        <div class="modal-content">
+            <h4 id="modalTitulo"></h4>
+            <p id="modalMensagem"></p>
         </div>
         <div class="modal-footer">
-            <a href="<?= $modal['link'] ?>" class="modal-close waves-effect waves-green btn-flat">
-                <?= $modal['botao'] ?>
-            </a>
+            <a href="#" id="modalBotao" class="modal-close waves-effect waves-green btn-flat"></a>
         </div>
     </div>
-    <?php endif; ?>
-
-    <!-- JS -->
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script>
+        var senha = document.getElementById('senha');
+        senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";    
+        senha.onclick = function(event) {
+        var larguraCampo = senha.offsetWidth;
+        var posClique = event.offsetX;
+        if (larguraCampo - posClique < 65) 
+            {
+            if (senha.type === 'password') 
+                {
+                    senha.type = 'text';
+                    senha.style.backgroundImage = "url('./img_senha/olho_aberto.svg')";
+                } 
+                else
+                {
+                    senha.type = 'password';
+                    senha.style.backgroundImage = "url('./img_senha/olho_fechado.svg')";
+                }
+            }
+            };
+    </script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            M.updateTextFields();
-
-            // ABRE O MODAL AUTOMATICAMENTE
-            <?php if (isset($modal)): ?>
-            var elem = document.getElementById('modal-sucesso');
-            var instance = M.Modal.init(elem, {dismissible: false});
-            instance.open();
-            <?php endif; ?>
-        });
+        var modalElems = document.querySelectorAll('.modal');
+        var modalInstances = M.Modal.init(modalElems);
+        <?php if (isset($_SESSION['modal_sucesso'])): ?>
+            var modalData = <?= json_encode($_SESSION['modal_sucesso']) ?>;
+            document.getElementById('modalTitulo').textContent = modalData.titulo;
+            document.getElementById('modalMensagem').textContent = modalData.mensagem;
+            document.getElementById('modalBotao').textContent = modalData.botao;
+            document.getElementById('modalBotao').href = modalData.link;
+            var modalInstance = M.Modal.getInstance(document.getElementById('modalSucesso'));
+            modalInstance.open();
+            <?php unset($_SESSION['modal_sucesso']); ?>
+        <?php endif; ?>
+    });
     </script>
 </body>
 </html>
