@@ -35,7 +35,7 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
                 <div class="row">
                     <div class="input-field col s12">
                         <input type="email" name="email" id="email" required class="validate" 
-                             placeholder="seu.email@iffarroupilha.edu.br">
+                            placeholder="seu.email@iffarroupilha.edu.br">
                         <label for="email">E-mail</label>
                     </div>
                     <div class="input-field col s12">
