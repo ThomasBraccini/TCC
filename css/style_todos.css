@@ -120,26 +120,33 @@
     /*Fecha feed styles*/
 
     /* Header Styles */
-        .nav-wrapper .input-field {
-            margin: 0 10px;
+/* Altura fixa da navbar */
+        nav { height: 64px; line-height: 64px; }
+        nav .brand-logo { line-height: 64px; font-weight: 500; }
+        
+        /* Barra de busca centralizada */
+        .search-wrapper {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
-        .nav-wrapper .input-field input {
-            height: 2.5rem;
-            font-size: 0.9rem;
+        .search-wrapper input {
+            height: 40px !important;
+            border-radius: 25px;
+            padding-left: 45px !important;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .nav-wrapper .brand-logo {
-            font-weight: 600;
-            font-size: 1.4rem;
-        }
-        .nav-wrapper i {
-            height: 2.5rem;
-            line-height: 2.5rem;
-        }
-        @media (max-width: 600px) {
-            .hide-on-mobile { display: none ; }
-            .brand-logo { font-size: 1.1rem ; }
-            .nav-wrapper .input-field { margin: 0 5px; }
-            .nav-wrapper .input-field input { width: 100px ; }
+        .search-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
         }
     /* Fecha Header Styles */
     /* Login pagina Styles */
