@@ -41,6 +41,23 @@ $publicacoes = [];
 while ($publicacao = mysqli_fetch_assoc($result_publicacoes)) {
     $publicacoes[] = $publicacao;
 }
+// ADICIONE AQUI: BUSCA PUBLICAÇÕES SALVAS
+$sql_salvos = "SELECT 
+                p.id_publicacao, p.titulo, p.caminho_arquivo, p.tipo_arquivo, p.descricao,
+                DATE_FORMAT(p.data_publicacao, '%d/%m/%Y') AS data_pub_fmt,
+                u.nome AS nome_autor
+            FROM salvos s
+            JOIN publicacao p ON s.id_publicacao = p.id_publicacao
+            JOIN usuario u ON p.id_usuario_fk = u.id_usuario
+            WHERE s.id_usuario = " . $_SESSION['user_id'] . "
+            AND p.deleted_at IS NULL
+            ORDER BY s.data_salvo DESC";
+
+$resultado_salvos = mysqli_query($conexao, $sql_salvos);
+$salvos = [];
+while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
+    $salvos[] = $salvo;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -95,14 +112,14 @@ while ($publicacao = mysqli_fetch_assoc($result_publicacoes)) {
         </div>
     </div>
     <!-- ABAS -->
-    <div class="row">
-        <div class="col s12">
-            <ul class="tabs">
-                <li class="tab col s6"><a class="active" href="#minhas">Minhas Publicações</a></li>
-                <li class="tab col s6"><a href="#curtidos">publicações Curtidas</a></li>
-            </ul>
+        <div class="row">
+            <div class="col s12 center">
+                <ul class="tabs tabs-fixed-width">
+                    <li class="tab col s6"><a class="active" href="#minhas">Minhas Publicações</a></li>
+                    <li class="tab col s6"><a href="#salvos">Publicações Salvas</a></li>
+                </ul>
+            </div>
         </div>
-    </div>
     <!-- MINHAS PUBLICAÇÕES -->
     <div id="minhas" class="col s12">
         <?php if (empty($publicacoes)): ?>
@@ -190,12 +207,71 @@ while ($publicacao = mysqli_fetch_assoc($result_publicacoes)) {
             </div>
         <?php endif; ?>
     </div>
-    <!-- VÍDEOS CURTIDOS -->
-    <div id="curtidos" class="col s12">
-        <div class="card-panel center no-content">
-            <p>Em breve: vídeos que você curtiu.</p>
-        </div>
+        <!-- ADICIONE AQUI: SEÇÃO SALVOS -->
+    <div id="salvos" class="col s12">
+        <?php if (empty($salvos)): ?>
+            <div class="card-panel center no-content">
+                <i class="material-icons large grey-text">bookmark_border</i>
+                <p>Você ainda não salvou nenhuma obra.</p>
+                <a href="../feed.php" class="btn waves-effect waves-light teal">
+                    Explorar Feed
+                </a>
+            </div>
+        <?php else: ?>
+            <div class="row" style="margin: 0 -0.75rem;">
+                <?php foreach ($salvos as $publicacao): ?>
+                    <?php 
+                    $caminho = "../uploads/" . $publicacao['caminho_arquivo'];
+                    $titulo  = $publicacao['titulo'];
+                    $colClass = 'feed-col col s12 m6 l4';
+                    ?>
+                    <div class="<?= $colClass ?>" style="padding: 0.75rem;">
+                        <div class="card feed-card">
+                            <!-- MÍDIA -->
+                            <?php if ($publicacao['tipo_arquivo'] == 'imagem'): ?>
+                                <div class="feed-media-container">
+                                    <img src="<?= $caminho ?>" 
+                                        class="feed-img materialboxed" 
+                                        alt="<?= $titulo ?>">
+                                </div>
+                            <?php elseif ($publicacao['tipo_arquivo'] == 'video'): ?>
+                                <div class="feed-media-container">
+                                    <video class="feed-video" controls preload="metadata" 
+                                        poster="../uploads/thumbnail_<?= pathinfo($publicacao['caminho_arquivo'], PATHINFO_FILENAME) ?>.jpg">
+                                        <source src="<?= $caminho ?>" type="video/mp4">
+                                        Seu navegador não suporta vídeo.
+                                    </video>
+                                </div>
+                            <?php elseif ($publicacao['tipo_arquivo'] == 'audio'): ?>
+                                <div class="feed-audio-container">
+                                    <i class="material-icons audio-icon">audiotrack</i>
+                                    <audio class="feed-audio" controls>
+                                        <source src="<?= $caminho ?>" type="audio/mpeg">
+                                        <source src="<?= $caminho ?>" type="audio/wav">
+                                        Seu navegador não suporta áudio.
+                                    </audio>
+                                </div>
+                            <?php endif; ?>
+                            <!-- CONTEÚDO -->
+                            <div class="card-content-feed">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <span class="autor-chip"><?= $publicacao['nome_autor'] ?></span>
+                                    <span class="grey-text text-darken-1" style="font-size: 0.8rem;">
+                                        <?= $publicacao['data_pub_fmt'] ?>
+                                    </span>
+                                </div>
+                                <h3 class="card-title-feed"><?= $titulo ?></h3>
+                                <?php if (!empty($publicacao['descricao'])): ?>
+                                    <p class="feed-description"><?= nl2br($publicacao['descricao']) ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
+    <!-- FIM DA SEÇÃO SALVOS -->
 </main>
 <script type="text/javascript" src="../js/materialize.min.js"></script>
 <script>

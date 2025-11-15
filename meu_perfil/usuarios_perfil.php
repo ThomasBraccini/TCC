@@ -93,7 +93,6 @@ while ($registro = mysqli_fetch_assoc($result_publicacao)) {
                 <div class="row" style="margin: 0 -0.75rem;">
                     <?php foreach ($publicacoes as $pub): 
                         $caminho = "../uploads/" . $pub['caminho_arquivo'];
-                        $thumb = "../uploads/thumbnail_" . pathinfo($pub['caminho_arquivo'], PATHINFO_FILENAME) . ".jpg";
                     ?>
                         <div class="col s12 m6 l4" style="padding: 0.75rem;">
                             <div class="card feed-card hoverable">
