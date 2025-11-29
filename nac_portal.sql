@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Tempo de geração: 06-Nov-2025 às 09:50
+-- Tempo de geração: 29-Nov-2025 às 13:49
 -- Versão do servidor: 8.0.31
 -- versão do PHP: 8.0.26
 
@@ -20,39 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `nac_portal`
 --
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `comentario`
---
-
-DROP TABLE IF EXISTS `comentario`;
-CREATE TABLE IF NOT EXISTS `comentario` (
-  `id_comentario` int NOT NULL AUTO_INCREMENT,
-  `id_publicacao_fk` int NOT NULL,
-  `id_usuario_fk` int DEFAULT NULL,
-  `texto_comentario` text NOT NULL,
-  `data_comentario` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_comentario`),
-  KEY `id_publicacao_fk` (`id_publicacao_fk`),
-  KEY `id_usuario_fk` (`id_usuario_fk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `curtida`
---
-
-DROP TABLE IF EXISTS `curtida`;
-CREATE TABLE IF NOT EXISTS `curtida` (
-  `id_usuario_fk` int NOT NULL,
-  `id_publicacao_fk` int NOT NULL,
-  `data_curtida` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_usuario_fk`,`id_publicacao_fk`),
-  KEY `id_publicacao_fk` (`id_publicacao_fk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -98,7 +65,43 @@ CREATE TABLE IF NOT EXISTS `publicacao` (
   `comentarios_count` int DEFAULT '0',
   PRIMARY KEY (`id_publicacao`),
   KEY `idx_publicacao_usuario` (`id_usuario_fk`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb3;
+
+--
+-- Extraindo dados da tabela `publicacao`
+--
+
+INSERT INTO `publicacao` (`id_publicacao`, `id_usuario_fk`, `titulo`, `descricao`, `caminho_arquivo`, `tipo_arquivo`, `mime_type`, `tamanho_bytes`, `data_publicacao`, `deleted_at`, `curtidas_count`, `comentarios_count`) VALUES
+(44, 79, 'Bruce Wayne ', 'Batman', '9b2ceeefcaed01facb3ee87f1c741469.jpg', 'imagem', 'image/jpeg', 48354, '2025-11-07 20:56:09', NULL, 0, 0),
+(46, 79, 'Trio dos Sonhos', 'Trio lendário do truco ', 'c71aa8e8a1b5a67b0d5abb0fb365f0b4.MP4', 'video', 'video/mp4', 2367492, '2025-11-07 21:02:08', NULL, 0, 0),
+(58, 57, 'Audio', 'Audio Teste ', '657636834e87c5a002d0e628ddf9f5cc.mp3', 'audio', 'audio/mpeg', 140988, '2025-11-07 23:15:19', NULL, 0, 0),
+(62, 57, 'Asa Mitaka', 'Personagem do anime de Chainsaw Man', '714edd5e5daf1bcac0ab9babede79080.jpeg', 'imagem', 'image/jpeg', 40363, '2025-11-15 17:32:27', NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `salvos`
+--
+
+DROP TABLE IF EXISTS `salvos`;
+CREATE TABLE IF NOT EXISTS `salvos` (
+  `id_salvo` int NOT NULL AUTO_INCREMENT,
+  `id_usuario` int NOT NULL,
+  `id_publicacao` int NOT NULL,
+  `data_salvo` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_salvo`),
+  UNIQUE KEY `unico_salvo` (`id_usuario`,`id_publicacao`),
+  KEY `id_publicacao` (`id_publicacao`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+
+--
+-- Extraindo dados da tabela `salvos`
+--
+
+INSERT INTO `salvos` (`id_salvo`, `id_usuario`, `id_publicacao`, `data_salvo`) VALUES
+(11, 79, 62, '2025-11-15 18:00:52'),
+(13, 79, 58, '2025-11-15 18:02:51'),
+(14, 79, 46, '2025-11-15 18:11:13');
 
 -- --------------------------------------------------------
 
@@ -121,35 +124,23 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `token_recuperacao` varchar(32) DEFAULT NULL,
   `token_expira_em` int DEFAULT NULL,
   `foto_perfil` varchar(255) DEFAULT NULL,
+  `is_admin` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Extraindo dados da tabela `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `nome`, `email`, `senha`, `preferencias`, `data_cadastro`, `deleted_at`, `verificado`, `codigo_verificacao`, `codigo_expira_em`, `token_recuperacao`, `token_expira_em`, `foto_perfil`) VALUES
-(57, 'Edupadawan', 'eduardo.2023318418@aluno.iffar.edu.br', '$2y$10$oG/AMvlqZj5gGHDTRun3ye95IkLZdhDttIjioBIxT23K.Swj3mzvC', 'Eu sou viado', '2025-10-29 13:39:19', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/2244ac5a4af50bfe5e8799898b2fc4ed.jpg'),
-(78, 'THOMAS SILVEIRA BRACCINI', 'thomas.silveira.braccini@gmail.com', '$2y$10$cc3dgZmuBtLWQgJ9jSVEuePEEz3Oq3w5FovZdo.3aY/aYi7lMY4S6', 'sexo', '2025-11-05 21:29:24', NULL, 1, NULL, NULL, NULL, NULL, '');
+INSERT INTO `usuario` (`id_usuario`, `nome`, `email`, `senha`, `preferencias`, `data_cadastro`, `deleted_at`, `verificado`, `codigo_verificacao`, `codigo_expira_em`, `token_recuperacao`, `token_expira_em`, `foto_perfil`, `is_admin`) VALUES
+(57, 'Edupadawan', 'eduardo.2023318418@aluno.iffar.edu.br', '$2y$10$oG/AMvlqZj5gGHDTRun3ye95IkLZdhDttIjioBIxT23K.Swj3mzvC', 'Eu sou viado', '2025-10-29 13:39:19', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/7b0b879914893aae6e8ec8d6dbc79473.jpg', 0),
+(79, 'THOMAS BRACCINI', 'thomas.silveira.braccini@gmail.com', '$2y$10$XtbdC3haBG5c/TRtIMZsuOaK9.tcJQu0Ass5EzAXUoTFZANFsZClm', 'Sou Sigma ', '2025-11-07 20:55:02', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/31c8b5e4f4ea0a403eb7d3742db41f1e.jpeg', 0),
+(81, 'Administrador', 'admin@nac.com', 'admin123', NULL, '2025-11-15 18:23:19', NULL, 0, NULL, NULL, NULL, NULL, NULL, 1);
 
 --
 -- Restrições para despejos de tabelas
 --
-
---
--- Limitadores para a tabela `comentario`
---
-ALTER TABLE `comentario`
-  ADD CONSTRAINT `comentario_ibfk_1` FOREIGN KEY (`id_publicacao_fk`) REFERENCES `publicacao` (`id_publicacao`) ON DELETE CASCADE,
-  ADD CONSTRAINT `comentario_ibfk_2` FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL;
-
---
--- Limitadores para a tabela `curtida`
---
-ALTER TABLE `curtida`
-  ADD CONSTRAINT `curtida_ibfk_1` FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `curtida_ibfk_2` FOREIGN KEY (`id_publicacao_fk`) REFERENCES `publicacao` (`id_publicacao`) ON DELETE CASCADE;
 
 --
 -- Limitadores para a tabela `denuncia`
@@ -163,6 +154,13 @@ ALTER TABLE `denuncia`
 --
 ALTER TABLE `publicacao`
   ADD CONSTRAINT `publicacao_ibfk_1` FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Limitadores para a tabela `salvos`
+--
+ALTER TABLE `salvos`
+  ADD CONSTRAINT `salvos_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `salvos_ibfk_2` FOREIGN KEY (`id_publicacao`) REFERENCES `publicacao` (`id_publicacao`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
