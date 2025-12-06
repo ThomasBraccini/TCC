@@ -137,11 +137,30 @@ while ($registro = mysqli_fetch_assoc($result_publicacao)) {
             <?php endif; ?>
         </div>
     </main>
+    
+    <script src="../js/materialize.min.js"></script>
     <script src="../js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             M.Tabs.init(document.querySelectorAll('.tabs'));
             M.Materialbox.init(document.querySelectorAll('.materialboxed'));
+
+            // FORÇA A ABA "PUBLICAÇÕES" FICAR VERDE (nunca mais vermelha)
+            setTimeout(function() {
+                var links = document.querySelectorAll('.tabs .tab a');
+                for (var i = 0; i < links.length; i++) {
+                    links[i].style.color = '#00695c';
+                    if (links[i].classList.contains('active')) {
+                        links[i].style.color = '#009688';
+                        links[i].style.fontWeight = '600';
+                    }
+                }
+                var linha = document.querySelector('.tabs .indicator');
+                if (linha) {
+                    linha.style.backgroundColor = '#009688';
+                    linha.style.height = '3px';
+                }
+            }, 100);
         });
     </script>
 </body>

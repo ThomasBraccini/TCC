@@ -13,7 +13,7 @@ if (isset($_POST['senha'])) {
 }
 
 if ($email === '' || $senha === '') {
-    header("Location: ../index.php?erro=Preencha email e senha.");
+    header("Location: ../index.php?erro_email=1&erro_senha=1");
     exit;
 }
 
@@ -45,12 +45,12 @@ if (mysqli_num_rows($resultado) > 0) {
 }
 
 if (!$usuario_encontrado) {
-    header("Location: ../index.php?error=E-mail ou senha incorretos.");
+    header("Location: ../index.php?erro_email=1");
     exit;
 }
 
 if ($verificado == 0) {
-    header("Location: ../index.php?error=Você precisa verificar seu e-mail antes de fazer login.");
+    header("Location: ../index.php?erro_email=1");
     exit;
 }
 
@@ -67,7 +67,7 @@ if (password_verify($senha, $senhaHash)) {
     }
     exit;
 } else {
-    header("Location: ../index.php?error=E-mail ou senha incorretos.");
+    header("Location: ../index.php?erro_senha=1");
     exit;
 }
 ?>

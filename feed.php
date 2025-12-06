@@ -5,7 +5,6 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 require_once "conexao.php"; 
-
 // Busca publicações
 $sql = "SELECT 
             p.titulo, p.caminho_arquivo, p.tipo_arquivo, p.data_publicacao,
@@ -105,15 +104,15 @@ if ($resultado) {
                                     <a href="meu_perfil/usuarios_perfil.php?id=<?= $publicacao['id_usuario_fk'] ?>" 
                                         class="waves-effect waves-light teal lighten-1 white-text"
                                         style="padding: 6px 16px; border-radius: 20px; font-weight: 500; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-decoration: none;">
-                                        <?= htmlspecialchars($publicacao['nome_usuario']) ?>
+                                        <?= $publicacao['nome_usuario'] ?>
                                     </a>
                                     <span class="grey-text text-darken-1" style="font-size: 0.8rem;">
                                         <?= $data_formatada ?>
                                     </span>
                                 </div>
-                                <h3 class="card-title-feed"><?= htmlspecialchars($publicacao['titulo']) ?></h3>
+                                <h3 class="card-title-feed"><?= $publicacao['titulo'] ?></h3>
                                 <?php if (!empty($publicacao['descricao'])): ?>
-                                    <p class="feed-description"><?= nl2br(htmlspecialchars($publicacao['descricao'])) ?></p>
+                                    <p class="feed-description"><?= nl2br($publicacao['descricao']) ?></p>
                                 <?php endif; ?>
 
                                 <!-- BOTÃO SALVAR -->
@@ -121,7 +120,7 @@ if ($resultado) {
                                     <a href="meu_perfil/salvos.php?id=<?= $publicacao['id_publicacao'] ?>&from=<?= urlencode($_SERVER['REQUEST_URI']) ?>"
                                         class="btn-small <?= $ja_salvo ? 'teal' : 'grey lighten-1' ?> waves-effect waves-light"
                                         style="font-size: 0.8rem; padding: 0 12px;">
-                                        <?= $ja_salvo ? 'salvo' : 'salvar' ?>
+                                        <?= $ja_salvo ? 'Curtido' : 'Curtir' ?>
                                     </a>
                                 </div>
 
@@ -144,7 +143,7 @@ if ($resultado) {
                             <div class="modal-content">
                                 <h5>Excluir Publicação?</h5>
                                 <p>Você está prestes a <strong>excluir permanentemente</strong>:</p>
-                                <p class="truncate"><strong>"<?= htmlspecialchars($publicacao['titulo']) ?>"</strong></p>
+                                <p class="truncate"><strong>"<?= $publicacao['titulo'] ?>"</strong></p>
                                 <p><small>Esta ação não pode ser desfeita.</small></p>
                             </div>
                             <div class="modal-footer">

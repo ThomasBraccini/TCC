@@ -116,7 +116,7 @@ while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
             <div class="col s12 center">
                 <ul class="tabs tabs-fixed-width">
                     <li class="tab col s6"><a class="active" href="#minhas">Minhas Publicações</a></li>
-                    <li class="tab col s6"><a href="#salvos">Publicações Salvas</a></li>
+                    <li class="tab col s6"><a href="#salvos">Publicações Curtidas</a></li>
                 </ul>
             </div>
         </div>
@@ -273,6 +273,24 @@ while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
     </div>
     <!-- FIM DA SEÇÃO SALVOS -->
 </main>
+<script type="text/javascript" src="../js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        M.Tabs.init(document.querySelectorAll('.tabs'));
+        M.Materialbox.init(document.querySelectorAll('.materialboxed'));
+        M.Modal.init(document.querySelectorAll('.modal'), { opacity: 0.7 });
+        // FORÇA AS ABAS VERDES DEPOIS QUE O MATERIALIZE TERMINA DE RODAR
+        setTimeout(function() {
+            document.querySelectorAll('.tabs .tab a').forEach(function(link) {
+                link.style.color = '#00695c';
+                if (link.classList.contains('active')) {
+                    link.style.color = '#009688';
+                }
+            });
+            document.querySelector('.tabs .indicator').style.backgroundColor = '#009688';
+        }, 100);
+    });
+</script>
 <script type="text/javascript" src="../js/materialize.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
