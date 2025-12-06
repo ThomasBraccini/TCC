@@ -43,9 +43,9 @@ $query = "SELECT id_usuario FROM usuario WHERE email = '$email'";
 $resultado = mysqli_query($conexao, $query);
 if ($resultado && mysqli_num_rows($resultado) > 0) {
     $_SESSION['mensagem_erro'] = "E-mail já cadastrado.";
-    header("Location: registro.php");
-    exit;
-}
+        header("Location: registro.php?email_existente=1");
+        exit;
+    }
 mysqli_free_result($resultado);
 // UPLOAD FOTO DE PERFIL
 $pasta_fotos = "../meu_perfil/fotos_perfil/";

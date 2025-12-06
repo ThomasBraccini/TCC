@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Tempo de geração: 29-Nov-2025 às 13:49
+-- Tempo de geração: 06-Dez-2025 às 20:31
 -- Versão do servidor: 8.0.31
 -- versão do PHP: 8.0.26
 
@@ -20,28 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `nac_portal`
 --
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `denuncia`
---
-
-DROP TABLE IF EXISTS `denuncia`;
-CREATE TABLE IF NOT EXISTS `denuncia` (
-  `id_denuncia` int NOT NULL AUTO_INCREMENT,
-  `id_publicacao_fk` int NOT NULL,
-  `id_usuario_fk` int DEFAULT NULL,
-  `motivo` text NOT NULL,
-  `data_denuncia` datetime DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('pendente','analisada') DEFAULT 'pendente',
-  `analisado_por_admin` varchar(255) DEFAULT NULL,
-  `data_analise` datetime DEFAULT NULL,
-  `observacao_admin` text,
-  PRIMARY KEY (`id_denuncia`),
-  KEY `id_publicacao_fk` (`id_publicacao_fk`),
-  KEY `id_usuario_fk` (`id_usuario_fk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -65,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `publicacao` (
   `comentarios_count` int DEFAULT '0',
   PRIMARY KEY (`id_publicacao`),
   KEY `idx_publicacao_usuario` (`id_usuario_fk`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Extraindo dados da tabela `publicacao`
@@ -75,7 +53,8 @@ INSERT INTO `publicacao` (`id_publicacao`, `id_usuario_fk`, `titulo`, `descricao
 (44, 79, 'Bruce Wayne ', 'Batman', '9b2ceeefcaed01facb3ee87f1c741469.jpg', 'imagem', 'image/jpeg', 48354, '2025-11-07 20:56:09', NULL, 0, 0),
 (46, 79, 'Trio dos Sonhos', 'Trio lendário do truco ', 'c71aa8e8a1b5a67b0d5abb0fb365f0b4.MP4', 'video', 'video/mp4', 2367492, '2025-11-07 21:02:08', NULL, 0, 0),
 (58, 57, 'Audio', 'Audio Teste ', '657636834e87c5a002d0e628ddf9f5cc.mp3', 'audio', 'audio/mpeg', 140988, '2025-11-07 23:15:19', NULL, 0, 0),
-(62, 57, 'Asa Mitaka', 'Personagem do anime de Chainsaw Man', '714edd5e5daf1bcac0ab9babede79080.jpeg', 'imagem', 'image/jpeg', 40363, '2025-11-15 17:32:27', NULL, 0, 0);
+(62, 57, 'Asa Mitaka', 'Personagem do anime de Chainsaw Man', '714edd5e5daf1bcac0ab9babede79080.jpeg', 'imagem', 'image/jpeg', 40363, '2025-11-15 17:32:27', NULL, 0, 0),
+(63, 57, 'thomas', 'informações da minha amada juliana ', '327a61ef359eba0fab1518d4d430eda1.jpeg', 'imagem', 'image/jpeg', 3549802, '2025-12-03 14:36:21', NULL, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -92,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `salvos` (
   PRIMARY KEY (`id_salvo`),
   UNIQUE KEY `unico_salvo` (`id_usuario`,`id_publicacao`),
   KEY `id_publicacao` (`id_publicacao`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Extraindo dados da tabela `salvos`
@@ -101,7 +80,8 @@ CREATE TABLE IF NOT EXISTS `salvos` (
 INSERT INTO `salvos` (`id_salvo`, `id_usuario`, `id_publicacao`, `data_salvo`) VALUES
 (11, 79, 62, '2025-11-15 18:00:52'),
 (13, 79, 58, '2025-11-15 18:02:51'),
-(14, 79, 46, '2025-11-15 18:11:13');
+(14, 79, 46, '2025-11-15 18:11:13'),
+(15, 57, 62, '2025-12-03 13:25:36');
 
 -- --------------------------------------------------------
 
@@ -127,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `is_admin` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Extraindo dados da tabela `usuario`
@@ -136,18 +116,11 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 INSERT INTO `usuario` (`id_usuario`, `nome`, `email`, `senha`, `preferencias`, `data_cadastro`, `deleted_at`, `verificado`, `codigo_verificacao`, `codigo_expira_em`, `token_recuperacao`, `token_expira_em`, `foto_perfil`, `is_admin`) VALUES
 (57, 'Edupadawan', 'eduardo.2023318418@aluno.iffar.edu.br', '$2y$10$oG/AMvlqZj5gGHDTRun3ye95IkLZdhDttIjioBIxT23K.Swj3mzvC', 'Eu sou viado', '2025-10-29 13:39:19', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/7b0b879914893aae6e8ec8d6dbc79473.jpg', 0),
 (79, 'THOMAS BRACCINI', 'thomas.silveira.braccini@gmail.com', '$2y$10$XtbdC3haBG5c/TRtIMZsuOaK9.tcJQu0Ass5EzAXUoTFZANFsZClm', 'Sou Sigma ', '2025-11-07 20:55:02', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/31c8b5e4f4ea0a403eb7d3742db41f1e.jpeg', 0),
-(81, 'Administrador', 'admin@nac.com', 'admin123', NULL, '2025-11-15 18:23:19', NULL, 0, NULL, NULL, NULL, NULL, NULL, 1);
+(88, 'Administrador', 'admin@portal.com', '$2y$10$vcZkBYUYYfI90rltbN9VCefENOKNH9ibD3JilIPou.AU2BFPVRixK', '[]', '2025-12-06 16:56:28', NULL, 1, NULL, NULL, NULL, NULL, NULL, 1);
 
 --
 -- Restrições para despejos de tabelas
 --
-
---
--- Limitadores para a tabela `denuncia`
---
-ALTER TABLE `denuncia`
-  ADD CONSTRAINT `denuncia_ibfk_1` FOREIGN KEY (`id_publicacao_fk`) REFERENCES `publicacao` (`id_publicacao`) ON DELETE CASCADE,
-  ADD CONSTRAINT `denuncia_ibfk_2` FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL;
 
 --
 -- Limitadores para a tabela `publicacao`

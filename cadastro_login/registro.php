@@ -91,6 +91,30 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </div>
     <!-- JS -->
+    <!-- MODAL: Email já cadastrado -->
+    <div id="modalEmailExistente" class="modal">
+        <div class="modal-content">
+            <h4>Atenção</h4>
+            <p>O e-mail informado já está cadastrado em nosso sistema.</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close btn teal">Entendi</a>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+
+        <?php if (isset($_GET['email_existente'])): ?>
+            var modal = document.getElementById('modalEmailExistente');
+            var instance = M.Modal.getInstance(modal);
+            instance.open();
+        <?php endif; ?>
+    });
+    </script>
+
     <script type="text/javascript" src="../js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
