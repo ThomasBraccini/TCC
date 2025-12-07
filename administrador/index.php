@@ -1,60 +1,26 @@
 <?php
 session_start();
-include '../conexao.php';
+require_once "../conexao.php";
 
-// Verificar se está logado como admin
-if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-    header("Location: ../cadastro_login/login.php");
-    exit();
+// Proteção: só admin entra
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    header("Location: ../index.php");
+    exit;
 }
 
-// Primeiro, vamos verificar se a tabela denuncia existe
-$tabela_existe = false;
-$result = mysqli_query($conexao, "SHOW TABLES LIKE 'denuncia'");
-if ($result && mysqli_num_rows($result) > 0) {
-    $tabela_existe = true;
-}
-mysqli_free_result($result);
-
-// Se tentar analisar denúncia mas a tabela não existe
-if (isset($_POST['analisar']) && !$tabela_existe) {
-    $mensagem = "A tabela de denúncias ainda não foi criada.";
-}
-// Se a tabela existe e foi enviado formulário
-elseif (isset($_POST['analisar']) && $tabela_existe) {
-    $id_denuncia = $_POST['id_denuncia'];
-    $status = $_POST['status'];
-    $obs = $_POST['observacao'];
-
-    $sql = "UPDATE denuncia 
-            SET status = ?, 
-                analisado_por_admin = ?, 
-                data_analise = NOW(), 
-                observacao_admin = ? 
-            WHERE id_denuncia = ?";
-    
-    $stmt = mysqli_prepare($conexao, $sql);
-    mysqli_stmt_bind_param($stmt, "sisi", $status, $_SESSION['user_id'], $obs, $id_denuncia);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+// ================= CONTADORES =================
+// Total de denúncias pendentes
+$total_denuncias = 0;
+$res_den = mysqli_query($conexao, "SELECT COUNT(*) AS t FROM denuncia WHERE status = 'pendente'");
+if ($res_den) {
+    $total_denuncias = mysqli_fetch_assoc($res_den)['t'];
 }
 
-// Buscar denúncias se a tabela existir
-$denuncias = [];
-if ($tabela_existe) {
-    $sql = "SELECT d.*, p.titulo, u.nome as nome_denunciante 
-            FROM denuncia d
-            JOIN publicacao p ON d.id_publicacao_fk = p.id_publicacao
-            JOIN usuario u ON d.id_usuario_fk = u.id_usuario
-            WHERE d.status = 'pendente'
-            ORDER BY d.data_denuncia DESC";
-
-    $resultado = mysqli_query($conexao, $sql);
-    
-    if ($resultado) {
-        $denuncias = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-        mysqli_free_result($resultado);
-    }
+// Total de publicações ativas
+$total_publicacoes = 0;
+$res_pub = mysqli_query($conexao, "SELECT COUNT(*) AS t FROM publicacao WHERE deleted_at IS NULL");
+if ($res_pub) {
+    $total_publicacoes = mysqli_fetch_assoc($res_pub)['t'];
 }
 ?>
 
@@ -63,90 +29,125 @@ if ($tabela_existe) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin</title>
-    <link rel="stylesheet" href="../css/materialize.css">
-    <link rel="stylesheet" href="../css/style_todos.css">
+    <title>Admin • NAC Portal</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/materialize.min.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/style_todos.css"/>
     <style>
-        body { padding: 20px; background: #f5f5f5; }
-        .card { padding: 20px; margin-bottom: 20px; }
-        h3 { color: #1a237e; }
+        body { background: #f5f7fa; }
+        .admin-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px !important;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .admin-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        .card-title-admin {
+            font-weight: 700 !important;
+            font-size: 1.6rem !important;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+        .badge-admin {
+            font-size: 1.1rem !important;
+            padding: 10px 20px !important;
+            border-radius: 30px !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h3>Painel do Administrador</h3>
-    <p>Olá, <b><?=$_SESSION['nome'] ?? 'Admin'?></b> | <a href="../logout.php">Sair</a></p>
+    <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
 
-    <?php if (isset($mensagem)): ?>
-        <div class="card-panel orange lighten-4">
-            <?= $mensagem ?>
+        <h3 class="center teal-text text-darken-2" style="font-weight: 300;">
+            <i class="material-icons large">admin_panel_settings</i><br>
+            Painel do Administrador
+        </h3>
+        <p class="center grey-text text-darken-2" style="font-size:1.2rem; margin-bottom:40px;">
+            Bem-vindo(a), <strong><?= $_SESSION['nome_usuario'] ?? 'Administrador' ?></strong>
+        </p>
+
+        <div class="row">
+
+            <!-- CADASTRAR NOTÍCIA -->
+            <div class="col s12 m6">
+                <a href="cadastrar_noticia.php" style="text-decoration:none; display:block;">
+                    <div class="card admin-card z-depth-5">
+                        <div class="card-image waves-effect waves-block waves-light" style="background: linear-gradient(135deg, #00695c, #009688); padding: 40px 20px;">
+                            <h4 class="white-text center card-title-admin">
+                                <i class="material-icons large">post_add</i><br>
+                                Cadastrar Notícia
+                            </h4>
+                        </div>
+                        <div class="card-content center" style="padding: 40px 20px;">
+                            <p class="grey-text text-darken-3" style="font-size:1.2rem; line-height:1.8;">
+                                Publicar novas notícias culturais, shows, exposições e eventos
+                            </p>
+                            <div class="center" style="margin-top:30px;">
+                                <span class="badge-admin teal white-text">
+                                    <i class="material-icons left">article</i>
+                                    <?= $total_publicacoes ?> publicações no ar
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- REVISAR DENÚNCIAS -->
+            <div class="col s12 m6">
+                <a href="denunciar.php" style="text-decoration:none; display:block;">
+                    <div class="card admin-card z-depth-5">
+                        <div class="card-image waves-effect waves-block waves-light" style="background: linear-gradient(135deg, #b71c1c, #e53935); padding: 40px 20px; position:relative;">
+                            <h4 class="white-text center card-title-admin">
+                                <i class="material-icons large">flag</i><br>
+                                Denúncias
+                            </h4>
+                            <?php if ($total_denuncias > 0): ?>
+                                <div class="new badge red pulse white-text" style="position:absolute; top:15px; right:15px; font-size:1.4rem; padding:10px 16px; border-radius:50%;">
+                                    <?= $total_denuncias ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="card-content center" style="padding: 40px 20px;">
+                            <p class="grey-text text-darken-3" style="font-size:1.2rem; line-height:1.8;">
+                                Revisar denúncias recebidas e decidir se remove ou mantém a publicação
+                            </p>
+                            <div class="center" style="margin-top:30px;">
+                                <?php if ($total_denuncias == 0): ?>
+                                    <span class="badge-admin green white-text">
+                                        <i class="material-icons left">check_circle</i> Tudo em dia!
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge-admin red white-text">
+                                        <i class="material-icons left">warning</i>
+                                        <?= $total_denuncias ?> aguardando análise
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
         </div>
-    <?php endif; ?>
 
-    <?php if (!$tabela_existe): ?>
-        <div class="card">
-            <h5>Atenção</h5>
-            <p>A tabela de denúncias ainda não foi criada no banco de dados.</p>
-            <p>Para criar a tabela, execute este SQL no phpMyAdmin:</p>
-            <pre style="background: #f1f1f1; padding: 10px; border-radius: 5px;">
-CREATE TABLE denuncia (
-    id_denuncia INT PRIMARY KEY AUTO_INCREMENT,
-    id_publicacao_fk INT NOT NULL,
-    id_usuario_fk INT NOT NULL,
-    motivo TEXT NOT NULL,
-    data_denuncia DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('pendente', 'analisada', 'rejeitada', 'publicacao_removida') DEFAULT 'pendente',
-    analisado_por_admin INT NULL,
-    data_analise DATETIME NULL,
-    observacao_admin TEXT NULL
-);
-            </pre>
+        <div class="center" style="margin-top:80px;">
+            <a href="../feed.php" class="btn-large grey darken-3 waves-effect waves-light" style="border-radius:30px; padding:0 50px; height:56px; font-size:1.1rem;">
+                <i class="material-icons left">arrow_back</i>
+                Voltar para o Feed
+            </a>
         </div>
-    <?php else: ?>
-        <div class="card">
-            <h5>Denúncias Pendentes (<?=count($denuncias)?>)</h5>
 
-            <?php if (count($denuncias) == 0): ?>
-                <p>Tudo limpo! Nenhuma denúncia pendente.</p>
-            <?php else: ?>
-                <table class="highlight responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Denunciante</th>
-                            <th>Publicação</th>
-                            <th>Motivo</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($denuncias as $d): ?>
-                        <tr>
-                            <td><?=date('d/m/Y H:i', strtotime($d['data_denuncia']))?></td>
-                            <td><?=htmlspecialchars($d['nome_denunciante'])?></td>
-                            <td><?=htmlspecialchars($d['titulo'])?></td>
-                            <td><?=htmlspecialchars($d['motivo'])?></td>
-                            <td>
-                                <form method="post" style="margin:0;">
-                                    <input type="hidden" name="id_denuncia" value="<?=$d['id_denuncia']?>">
-                                    <select name="status" required>
-                                        <option value="analisada">Aprovada / Analisada</option>
-                                        <option value="rejeitada">Rejeitada</option>
-                                        <option value="publicacao_removida">Publicação Removida</option>
-                                    </select><br><br>
-                                    <textarea name="observacao" placeholder="Observação (opcional)" rows="2"></textarea><br><br>
-                                    <button type="submit" name="analisar" class="btn blue">Analisar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </div>
-    <?php endif; ?>
-</div>
+    </div>
 
+    <script src="../js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            M.AutoInit();
+        });
+    </script>
 </body>
 </html>

@@ -1,10 +1,11 @@
-<?php
+<?php 
 session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
 require_once "conexao.php"; 
+
 // Busca publicações
 $sql = "SELECT 
             p.titulo, p.caminho_arquivo, p.tipo_arquivo, p.data_publicacao,
@@ -35,7 +36,7 @@ if ($resultado) {
     <?php include_once "header.php"; ?>
     <main class="container">
 
-        <!-- MODAL SUCESSO (excluir) -->
+        <!-- MODAL SUCESSO EXCLUIR -->
         <div id="modal-sucesso" class="modal">
             <div class="modal-content center">
                 <i class="material-icons large green-text" style="font-size: 4rem;">check_circle</i>
@@ -44,6 +45,18 @@ if ($resultado) {
             </div>
             <div class="modal-footer">
                 <a href="#!" class="modal-close waves-effect btn-flat">OK</a>
+            </div>
+        </div>
+
+        <!-- MODAL SUCESSO DENÚNCIA -->
+        <div id="modal-denuncia-sucesso" class="modal">
+            <div class="modal-content center">
+                <i class="material-icons large green-text" style="font-size: 5rem;">check_circle</i>
+                <h5>Denúncia enviada!</h5>
+                <p>Obrigado por ajudar a manter a comunidade segura.<br>Um moderador irá analisar em breve.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect btn teal">OK</a>
             </div>
         </div>
 
@@ -71,8 +84,7 @@ if ($resultado) {
                         $ja_salvo = true;
                     }
                     ?>
-                    <div class="feed-col col l4" style="padding: 0.75rem;" 
-                        data-titulo="<?= $titulo_lower ?>">
+                    <div class="feed-col col l4" style="padding: 0.75rem;" data-titulo="<?= $titulo_lower ?>">
                         <div class="card feed-card">
 
                             <!-- MÍDIA -->
@@ -124,6 +136,16 @@ if ($resultado) {
                                     </a>
                                 </div>
 
+                                <!-- BOTÃO DENUNCIAR -->
+                                <?php if (!$is_dono): ?>
+                                <div style="margin-top: 0.8rem; text-align: right;">
+                                    <a href="#modal-denuncia-<?= $publicacao['id_publicacao'] ?>" 
+                                       class="modal-trigger btn-small deep-orange darken-2 waves-effect waves-light">
+                                        <i class="material-icons left" style="font-size:1.1rem;">flag</i> Denunciar
+                                    </a>
+                                </div>
+                                <?php endif; ?>
+
                                 <!-- BOTÃO EXCLUIR (só dono) -->
                                 <div class="delete-btn" style="margin-top: 0.5rem;">
                                     <?php if ($is_dono): ?>
@@ -136,6 +158,39 @@ if ($resultado) {
                             </div>
                         </div>
                     </div>
+
+                    <!-- MODAL DENÚNCIA (centralizado) -->
+                    <?php if (!$is_dono): ?>
+                    <div id="modal-denuncia-<?= $publicacao['id_publicacao'] ?>" class="modal">
+                        <!-- CORREÇÃO AQUI: Mudado de "administrador/denunciar.php" para "processa_denuncia.php" -->
+                        <form action="processa_denuncia.php" method="POST">
+                            <div class="modal-content">
+                                <h5 class="red-text text-darken-2">Denunciar publicação</h5>
+                                <p>Publicação: <strong><?= $publicacao['titulo'] ?></strong></p>
+
+                                <div class="input-field">
+                                    <select name="categoria" required>
+                                        <option value="" disabled selected>Escolha o motivo</option>
+                                        <option value="spam">Spam</option>
+                                        <option value="conteudo_ofensivo">Conteúdo ofensivo ou hate speech</option>
+                                        <option value="desinformacao">Desinformação / fake news</option>
+                                        <option value="violencia">Violência ou ameaça</option>
+                                        <option value="pornografia">Conteúdo sexual explícito</option>
+                                        <option value="direitos_autorais">Violação de direitos autorais</option>
+                                        <option value="outros">Outro motivo</option>
+                                    </select>
+                                </div>
+
+                                <input type="hidden" name="id_publicacao" value="<?= $publicacao['id_publicacao'] ?>">
+                            </div>
+
+                            <div class="modal-footer">
+                                <a href="#!" class="modal-close waves-effect btn-flat">Cancelar</a>
+                                <button type="submit" class="btn red waves-effect waves-light">Enviar denúncia</button>
+                            </div>
+                        </form>
+                    </div>
+                    <?php endif; ?>
 
                     <!-- MODAL EXCLUIR -->
                     <?php if ($is_dono): ?>
@@ -161,17 +216,40 @@ if ($resultado) {
         <?php endif; ?>
     </main>
 
-    <!-- JS (só Materialize) -->
     <script type="text/javascript" src="js/materialize.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            M.Modal.init(document.querySelectorAll('.modal'), { opacity: 0.7 });
-            M.Materialbox.init(document.querySelectorAll('.materialboxed'));
-            <?php if (isset($_GET['success'])): ?>
-                const modalSucesso = M.Modal.getInstance(document.getElementById('modal-sucesso'));
-                if (modalSucesso) modalSucesso.open();
-            <?php endif; ?>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializa TODOS os modais
+        var modals = document.querySelectorAll('.modal');
+        M.Modal.init(modals, {
+            opacity: 0.7,
+            inDuration: 300,
+            outDuration: 200,
+            preventScrolling: true,
+            dismissible: true
         });
+
+        // Inicializa imagens grandes
+        M.Materialbox.init(document.querySelectorAll('.materialboxed'));
+
+        // Inicializa selects
+        M.FormSelect.init(document.querySelectorAll('select'));
+
+        // Abre modal de sucesso da denúncia
+        <?php if (isset($_GET['denuncia_ok'])): ?>
+            var sucesso = M.Modal.getInstance(document.getElementById('modal-denuncia-sucesso'));
+            if (sucesso) sucesso.open();
+        <?php endif; ?>
+
+        // Modal de sucesso da exclusão
+        <?php if (isset($_GET['success'])): ?>
+            var sucessoExcluir = M.Modal.getInstance(document.getElementById('modal-sucesso'));
+            if (sucessoExcluir) sucessoExcluir.open();
+        <?php endif; ?>
+    });
+
+    document.addEventListener('submit', function(e) {});
     </script>
 </body>
 </html>
