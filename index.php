@@ -121,5 +121,6 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
             <?php endif; ?>
         });
     </script>
+    <?php include "footer.php"; ?>
 </body>
 </html>

@@ -34,6 +34,7 @@ if ($resultado) {
 </head>
 <body>
     <?php include_once "header.php"; ?>
+
     <main class="container">
 
         <!-- MODAL SUCESSO EXCLUIR -->
@@ -129,10 +130,12 @@ if ($resultado) {
 
                                 <!-- BOTÃO SALVAR -->
                                 <div style="margin-top: 0.8rem; text-align: right;">
-                                    <a href="meu_perfil/salvos.php?id=<?= $publicacao['id_publicacao'] ?>&from=<?= urlencode($_SERVER['REQUEST_URI']) ?>"
-                                        class="btn-small <?= $ja_salvo ? 'teal' : 'grey lighten-1' ?> waves-effect waves-light"
-                                        style="font-size: 0.8rem; padding: 0 12px;">
-                                        <?= $ja_salvo ? 'Curtido' : 'Curtir' ?>
+                                    <a href="javascript:void(0);" 
+                                    class="btn-small <?= $ja_salvo ? 'teal' : 'grey lighten-1' ?> curtir-btn"
+                                    data-id="<?= $publicacao['id_publicacao'] ?>"
+                                    data-salvo="<?= $ja_salvo ? '1' : '0' ?>"
+                                    style="font-size: 0.8rem; padding: 0 12px;">
+                                        <span class="texto-botao"><?= $ja_salvo ? 'Curtido' : 'Curtir' ?></span>
                                     </a>
                                 </div>
 
@@ -140,8 +143,8 @@ if ($resultado) {
                                 <?php if (!$is_dono): ?>
                                 <div style="margin-top: 0.8rem; text-align: right;">
                                     <a href="#modal-denuncia-<?= $publicacao['id_publicacao'] ?>" 
-                                    class="modal-trigger btn-small deep-orange darken-2 waves-effect waves-light">
-                                        <i class="material-icons left" style="font-size:1.1rem;">flag</i> Denunciar
+                                    class="modal-trigger btn-small deep-orange ">
+                                        <i class="material-icons left" style="font-size:1.1rem;">flag</i>
                                     </a>
                                 </div>
                                 <?php endif; ?>
@@ -241,5 +244,31 @@ if ($resultado) {
 
     document.addEventListener('submit', function(e) {});
     </script>
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Botão de curtir - mudança instantânea e simples (sem salvar no banco)
+    document.querySelectorAll('.curtir-btn').forEach(function(botao) {
+        botao.addEventListener('click', function() {
+            var texto = this.querySelector('.texto-botao');
+            var jaSalvo = this.getAttribute('data-salvo') === '1';
+
+            if (jaSalvo) {
+                // Descurtir
+                this.classList.remove('teal');
+                this.classList.add('grey', 'lighten-1');
+                texto.textContent = 'Curtir';
+                this.setAttribute('data-salvo', '0');
+            } else {
+                // Curtir
+                this.classList.remove('grey', 'lighten-1');
+                this.classList.add('teal');
+                texto.textContent = 'Curtido';
+                this.setAttribute('data-salvo', '1');
+            }
+        });
+    });
+});
+</script>
+        <?php include "footer.php"; ?>
 </body>
 </html>
