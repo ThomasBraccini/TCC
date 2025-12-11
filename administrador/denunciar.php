@@ -45,7 +45,8 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
     mysqli_query($conexao, $sql_update_denuncia);
 
     $_SESSION['admin_msg'] = $mensagem;
-    header("Location: denunciar.php");
+    $_SESSION['admin_status'] = $status; // aprovada ou rejeitada
+    header("Location: denunciar.php?modal=1");
     exit;
 }
 ?>
@@ -102,14 +103,6 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
 
 <div class="container" style="margin-top:30px;">
     <h4 class="center teal-text text-darken-2">Revisar Denúncias Pendentes</h4>
-
-    <?php if (isset($_SESSION['admin_msg'])): ?>
-        <div class="card-panel teal lighten-4 center white-text">
-            <strong><?= $_SESSION['admin_msg'] ?></strong>
-        </div>
-        <?php unset($_SESSION['admin_msg']); ?>
-    <?php endif; ?>
-
 <?php
 $sql = "SELECT 
             d.id_denuncia,
@@ -200,65 +193,116 @@ $res = mysqli_query($conexao, $sql);
 
                     <!-- EXCLUIR -->
                     <a href="#modal-confirm-exclusao"
-                       class="btn red waves-effect waves-light modal-trigger btn-aprovar-exclusao"
-                       data-id="<?= $d['id_denuncia'] ?>"
-                       data-titulo="<?= $d['titulo'] ?>">
+                        class="btn red modal-trigger btn-aprovar-exclusao"
+                        data-id="<?= $d['id_denuncia'] ?>"
+                        data-titulo="<?= $d['titulo'] ?>">
                         Remover
                     </a>
 
                     <!-- MANTER (abre modal novo) -->
                     <a href="#modal-confirm-manter"
-                       class="btn green darken-1 waves-effect waves-light modal-trigger btn-manter"
-                       data-id="<?= $d['id_denuncia'] ?>"
-                       data-titulo="<?= $d['titulo'] ?>">
+                        class="btn green modal-trigger btn-manter"
+                        data-id="<?= $d['id_denuncia'] ?>"
+                        data-titulo="<?= $d['titulo'] ?>">
                         Manter
                     </a>
 
                 </div>
             </div>
         </div>
-
     <?php endwhile; ?>
 <?php endif; ?>
 </div>
+    <!-- MODAL DE FEEDBACK -->
+    <div id="modal-feedback" class="modal">
+        <div class="modal-content center">
+            <h4 id="titulo-feedback"></h4>
+            <p id="texto-feedback"></p>
+        </div>
 
+        <div class="modal-footer">
+            <a href="denunciar.php" class="modal-close btn green">OK</a>
+        </div>
+    </div>
+<script src="../js/materialize.min.js"></script>
 <script src="../js/materialize.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    M.AutoInit();
+    // ============================
+    // INICIALIZAÇÃO DOS MODAIS
+    // ============================
+    var modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
 
+    // ============================
+    // MODAL DE FEEDBACK AUTOMÁTICO
+    // ============================
+    <?php if (isset($_GET['modal']) && isset($_SESSION['admin_msg'])): ?>
+
+        var titulo = "";
+        var mensagem = "<?= $_SESSION['admin_msg'] ?>";
+        var status = "<?= $_SESSION['admin_status'] ?>";
+
+        if (status === "aprovada") {
+            titulo = "Publicação Removida";
+        } else {
+            titulo = "Denúncia Rejeitada";
+        }
+
+        document.getElementById("titulo-feedback").innerHTML = titulo;
+        document.getElementById("texto-feedback").innerHTML = mensagem;
+
+        var elem = document.getElementById("modal-feedback");
+        var instance = M.Modal.getInstance(elem);
+        instance.open();
+
+        <?php 
+            unset($_SESSION['admin_msg']);
+            unset($_SESSION['admin_status']);
+        ?>
+
+    <?php endif; ?>
+
+    // ============================
+    // CONFIRMAR EXCLUSÃO
+    // ============================
     var confirmExcluirBtn = document.getElementById('confirm-exclusao-btn');
-    var confirmManterBtn = document.getElementById('confirm-manter-btn');
 
-    // ========== CONFIRMAR EXCLUSÃO ==========
     document.querySelectorAll('.btn-aprovar-exclusao').forEach(btn => {
         btn.addEventListener('click', function() {
+
             var id = this.dataset.id;
             var titulo = this.dataset.titulo;
 
             document.getElementById("texto-excluir").innerHTML =
-                'Tem certeza que deseja <strong>REMOVER PERMANENTEMENTE</strong> a publicação:<br><strong>"' + titulo + '"</strong>?';
+                'Tem certeza que deseja <strong>REMOVER PERMANENTEMENTE</strong> a publicação:<br><strong>"' 
+                + titulo + '"</strong>?';
 
             confirmExcluirBtn.href = 'denunciar.php?acao=aprovar&id=' + id;
         });
     });
 
-    // ========== CONFIRMAR MANUTENÇÃO (NOVO) ==========
+    // ============================
+    // CONFIRMAR MANUTENÇÃO
+    // ============================
+    var confirmManterBtn = document.getElementById('confirm-manter-btn');
+
     document.querySelectorAll('.btn-manter').forEach(btn => {
         btn.addEventListener('click', function() {
+
             var id = this.dataset.id;
             var titulo = this.dataset.titulo;
 
             document.getElementById("texto-manter").innerHTML =
-                'Deseja realmente <strong>MANTER</strong> a publicação:<br><strong>"' + titulo + '"</strong>?';
+                'Deseja realmente <strong>MANTER</strong> a publicação:<br><strong>"' 
+                + titulo + '"</strong>?';
 
             confirmManterBtn.href = 'denunciar.php?acao=rejeitar&id=' + id;
         });
     });
 
 });
-</script>
-
+</script>   
 </body>
 </html>

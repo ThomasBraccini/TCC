@@ -128,26 +128,30 @@ if ($resultado) {
                                     <p class="feed-description"><?= nl2br($publicacao['descricao']) ?></p>
                                 <?php endif; ?>
 
-                                <!-- BOTÃO SALVAR -->
-                                <div style="margin-top: 0.8rem; text-align: right;">
-                                    <a href="javascript:void(0);" 
-                                    class="btn-small <?= $ja_salvo ? 'teal' : 'grey lighten-1' ?> curtir-btn"
-                                    data-id="<?= $publicacao['id_publicacao'] ?>"
-                                    data-salvo="<?= $ja_salvo ? '1' : '0' ?>"
-                                    style="font-size: 0.8rem; padding: 0 12px;">
-                                        <span class="texto-botao"><?= $ja_salvo ? 'Curtido' : 'Curtir' ?></span>
-                                    </a>
-                                </div>
-
-                                <!-- BOTÃO DENUNCIAR -->
-                                <?php if (!$is_dono): ?>
-                                <div style="margin-top: 0.8rem; text-align: right;">
+                                <!-- AÇÕES NA PARTE INFERIOR -->
+                                <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                    <!-- BOTÃO DENUNCIAR (ESQUERDA) - redondo, só aparece se não for dono -->
+                                    <?php if (!$is_dono): ?>
                                     <a href="#modal-denuncia-<?= $publicacao['id_publicacao'] ?>" 
-                                    class="modal-trigger btn-small deep-orange ">
-                                        <i class="material-icons left" style="font-size:1.1rem;">flag</i>
+                                        class="modal-trigger"
+                                        style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #fff3e0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                        <i class="material-icons orange-text text-darken-3" style="font-size: 2rem;">flag</i>
+                                    </a>
+                                    <?php else: ?>
+                                        <span style="width: 48px;"></span>
+                                    <?php endif; ?>
+                                    <!-- BOTÃO CURTIR (DIREITA - CORAÇÃO) -->
+                                    <a href="meu_perfil/salvos.php?id=<?= $publicacao['id_publicacao'] ?>&from=feed.php" 
+                                        class="curtir-btn"
+                                        data-id="<?= $publicacao['id_publicacao'] ?>"
+                                        data-salvo="<?= $ja_salvo ? '1' : '0' ?>"
+                                        style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: <?= $ja_salvo ? '#e0e0e0' : '#f5f5f5' ?>; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                        <i class="material-icons <?= $ja_salvo ? 'red-text text-darken-1' : 'grey-text text-lighten-1' ?>" 
+                                            style="font-size: 2rem;">
+                                            <?= $ja_salvo ? 'favorite' : 'favorite_border' ?>
+                                        </i>
                                     </a>
                                 </div>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
