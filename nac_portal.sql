@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Tempo de geração: 06-Dez-2025 às 20:31
+-- Tempo de geração: 10-Dez-2025 às 11:48
 -- Versão do servidor: 8.0.31
 -- versão do PHP: 8.0.26
 
@@ -20,6 +20,41 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `nac_portal`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `denuncia`
+--
+
+DROP TABLE IF EXISTS `denuncia`;
+CREATE TABLE IF NOT EXISTS `denuncia` (
+  `id_denuncia` int NOT NULL AUTO_INCREMENT,
+  `id_usuario` int NOT NULL,
+  `id_publicacao` int NOT NULL,
+  `categoria` enum('spam','conteudo_ofensivo','desinformacao','violencia','pornografia','direitos_autorais','outros') COLLATE utf8mb4_unicode_ci DEFAULT 'outros',
+  `data_denuncia` datetime DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('pendente','aprovada','rejeitada') COLLATE utf8mb4_unicode_ci DEFAULT 'pendente',
+  `id_admin_analisou` int DEFAULT NULL,
+  `observacao_admin` text COLLATE utf8mb4_unicode_ci,
+  `data_analise` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_denuncia`),
+  KEY `idx_usuario` (`id_usuario`),
+  KEY `idx_publicacao` (`id_publicacao`),
+  KEY `idx_status` (`status`),
+  KEY `idx_data` (`data_denuncia`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `denuncia`
+--
+
+INSERT INTO `denuncia` (`id_denuncia`, `id_usuario`, `id_publicacao`, `categoria`, `data_denuncia`, `status`, `id_admin_analisou`, `observacao_admin`, `data_analise`, `deleted_at`) VALUES
+(1, 57, 46, 'pornografia', '2025-12-06 19:44:26', 'rejeitada', 88, NULL, '2025-12-06 21:09:14', NULL),
+(2, 57, 46, 'outros', '2025-12-06 21:29:47', 'aprovada', 88, NULL, '2025-12-06 21:30:43', NULL),
+(3, 57, 44, 'desinformacao', '2025-12-06 21:34:02', 'rejeitada', 88, NULL, '2025-12-06 21:34:47', NULL),
+(4, 88, 44, 'desinformacao', '2025-12-06 21:37:17', 'rejeitada', 88, NULL, '2025-12-06 21:42:03', NULL);
 
 -- --------------------------------------------------------
 
@@ -51,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `publicacao` (
 
 INSERT INTO `publicacao` (`id_publicacao`, `id_usuario_fk`, `titulo`, `descricao`, `caminho_arquivo`, `tipo_arquivo`, `mime_type`, `tamanho_bytes`, `data_publicacao`, `deleted_at`, `curtidas_count`, `comentarios_count`) VALUES
 (44, 79, 'Bruce Wayne ', 'Batman', '9b2ceeefcaed01facb3ee87f1c741469.jpg', 'imagem', 'image/jpeg', 48354, '2025-11-07 20:56:09', NULL, 0, 0),
-(46, 79, 'Trio dos Sonhos', 'Trio lendário do truco ', 'c71aa8e8a1b5a67b0d5abb0fb365f0b4.MP4', 'video', 'video/mp4', 2367492, '2025-11-07 21:02:08', NULL, 0, 0),
+(46, 79, 'Trio dos Sonhos', 'Trio lendário do truco ', 'c71aa8e8a1b5a67b0d5abb0fb365f0b4.MP4', 'video', 'video/mp4', 2367492, '2025-11-07 21:02:08', '2025-12-06 21:30:43', 0, 0),
 (58, 57, 'Audio', 'Audio Teste ', '657636834e87c5a002d0e628ddf9f5cc.mp3', 'audio', 'audio/mpeg', 140988, '2025-11-07 23:15:19', NULL, 0, 0),
 (62, 57, 'Asa Mitaka', 'Personagem do anime de Chainsaw Man', '714edd5e5daf1bcac0ab9babede79080.jpeg', 'imagem', 'image/jpeg', 40363, '2025-11-15 17:32:27', NULL, 0, 0),
 (63, 57, 'thomas', 'informações da minha amada juliana ', '327a61ef359eba0fab1518d4d430eda1.jpeg', 'imagem', 'image/jpeg', 3549802, '2025-12-03 14:36:21', NULL, 0, 0);
@@ -117,6 +152,26 @@ INSERT INTO `usuario` (`id_usuario`, `nome`, `email`, `senha`, `preferencias`, `
 (57, 'Edupadawan', 'eduardo.2023318418@aluno.iffar.edu.br', '$2y$10$oG/AMvlqZj5gGHDTRun3ye95IkLZdhDttIjioBIxT23K.Swj3mzvC', 'Eu sou viado', '2025-10-29 13:39:19', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/7b0b879914893aae6e8ec8d6dbc79473.jpg', 0),
 (79, 'THOMAS BRACCINI', 'thomas.silveira.braccini@gmail.com', '$2y$10$XtbdC3haBG5c/TRtIMZsuOaK9.tcJQu0Ass5EzAXUoTFZANFsZClm', 'Sou Sigma ', '2025-11-07 20:55:02', NULL, 1, NULL, NULL, NULL, NULL, 'meu_perfil/fotos_perfil/31c8b5e4f4ea0a403eb7d3742db41f1e.jpeg', 0),
 (88, 'Administrador', 'admin@portal.com', '$2y$10$vcZkBYUYYfI90rltbN9VCefENOKNH9ibD3JilIPou.AU2BFPVRixK', '[]', '2025-12-06 16:56:28', NULL, 1, NULL, NULL, NULL, NULL, NULL, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura stand-in para vista `view_denuncias_pendentes`
+-- (Veja abaixo para a view atual)
+--
+DROP VIEW IF EXISTS `view_denuncias_pendentes`;
+CREATE TABLE IF NOT EXISTS `view_denuncias_pendentes` (
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para vista `view_denuncias_pendentes`
+--
+DROP TABLE IF EXISTS `view_denuncias_pendentes`;
+
+DROP VIEW IF EXISTS `view_denuncias_pendentes`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_denuncias_pendentes`  AS SELECT `d`.`id_denuncia` AS `id_denuncia`, `d`.`id_publicacao` AS `id_publicacao`, `p`.`titulo` AS `titulo`, `d`.`motivo` AS `motivo`, `d`.`categoria` AS `categoria`, `u`.`nome` AS `nome_usuario_que_denunciou`, `d`.`data_denuncia` AS `data_denuncia` FROM ((`denuncia` `d` join `usuario` `u` on((`d`.`id_usuario` = `u`.`id_usuario`))) join `publicacao` `p` on((`d`.`id_publicacao` = `p`.`id_publicacao`))) WHERE ((`d`.`status` = 'pendente') AND (`d`.`deleted_at` is null)) ORDER BY `d`.`data_denuncia` AS `DESCdesc` ASC  ;
 
 --
 -- Restrições para despejos de tabelas

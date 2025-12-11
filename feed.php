@@ -140,21 +140,11 @@ if ($resultado) {
                                 <?php if (!$is_dono): ?>
                                 <div style="margin-top: 0.8rem; text-align: right;">
                                     <a href="#modal-denuncia-<?= $publicacao['id_publicacao'] ?>" 
-                                       class="modal-trigger btn-small deep-orange darken-2 waves-effect waves-light">
+                                    class="modal-trigger btn-small deep-orange darken-2 waves-effect waves-light">
                                         <i class="material-icons left" style="font-size:1.1rem;">flag</i> Denunciar
                                     </a>
                                 </div>
                                 <?php endif; ?>
-
-                                <!-- BOTÃO EXCLUIR (só dono) -->
-                                <div class="delete-btn" style="margin-top: 0.5rem;">
-                                    <?php if ($is_dono): ?>
-                                        <a href="#modal-delete-<?= $publicacao['id_publicacao'] ?>" 
-                                            class="modal-trigger btn-small red waves-effect waves-light">
-                                            <i class="material-icons left">delete</i> Excluir
-                                        </a>
-                                    <?php endif; ?>
-                                </div>
                             </div>
                         </div>
                     </div>

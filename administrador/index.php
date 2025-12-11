@@ -1,29 +1,19 @@
 <?php
 session_start();
 require_once "../conexao.php";
-
 // Proteção: só admin entra
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+if (!isset($_SESSION['user_id']) or !isset($_SESSION['is_admin']) or $_SESSION['is_admin'] != 1) {
     header("Location: ../index.php");
     exit;
 }
-
-// ================= CONTADORES =================
-// Total de denúncias pendentes
 $total_denuncias = 0;
-$res_den = mysqli_query($conexao, "SELECT COUNT(*) AS t FROM denuncia WHERE status = 'pendente'");
-if ($res_den) {
-    $total_denuncias = mysqli_fetch_assoc($res_den)['t'];
-}
-
-// Total de publicações ativas
-$total_publicacoes = 0;
-$res_pub = mysqli_query($conexao, "SELECT COUNT(*) AS t FROM publicacao WHERE deleted_at IS NULL");
-if ($res_pub) {
-    $total_publicacoes = mysqli_fetch_assoc($res_pub)['t'];
+$sql = "SELECT COUNT(*) AS total_pendente FROM denuncia WHERE status = 'pendente'";
+$resultado = mysqli_query($conexao, $sql);
+if ($resultado) {
+    $linha = mysqli_fetch_assoc($resultado);    
+    $total_denuncias = $linha['total_pendente'];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -58,19 +48,14 @@ if ($res_pub) {
     </style>
 </head>
 <body>
-
     <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
-
         <h3 class="center teal-text text-darken-2" style="font-weight: 300;">
             <i class="material-icons large">admin_panel_settings</i><br>
             Painel do Administrador
         </h3>
         <p class="center grey-text text-darken-2" style="font-size:1.2rem; margin-bottom:40px;">
-            Bem-vindo(a), <strong><?= $_SESSION['nome_usuario'] ?? 'Administrador' ?></strong>
         </p>
-
         <div class="row">
-
             <!-- CADASTRAR NOTÍCIA -->
             <div class="col s12 m6">
                 <a href="cadastrar_noticia.php" style="text-decoration:none; display:block;">
@@ -86,16 +71,12 @@ if ($res_pub) {
                                 Publicar novas notícias culturais, shows, exposições e eventos
                             </p>
                             <div class="center" style="margin-top:30px;">
-                                <span class="badge-admin teal white-text">
-                                    <i class="material-icons left">article</i>
-                                    <?= $total_publicacoes ?> publicações no ar
                                 </span>
                             </div>
                         </div>
                     </div>
                 </a>
             </div>
-
             <!-- REVISAR DENÚNCIAS -->
             <div class="col s12 m6">
                 <a href="denunciar.php" style="text-decoration:none; display:block;">
@@ -105,11 +86,6 @@ if ($res_pub) {
                                 <i class="material-icons large">flag</i><br>
                                 Denúncias
                             </h4>
-                            <?php if ($total_denuncias > 0): ?>
-                                <div class="new badge red pulse white-text" style="position:absolute; top:15px; right:15px; font-size:1.4rem; padding:10px 16px; border-radius:50%;">
-                                    <?= $total_denuncias ?>
-                                </div>
-                            <?php endif; ?>
                         </div>
                         <div class="card-content center" style="padding: 40px 20px;">
                             <p class="grey-text text-darken-3" style="font-size:1.2rem; line-height:1.8;">
@@ -131,23 +107,12 @@ if ($res_pub) {
                     </div>
                 </a>
             </div>
-
         </div>
-
         <div class="center" style="margin-top:80px;">
-            <a href="../feed.php" class="btn-large grey darken-3 waves-effect waves-light" style="border-radius:30px; padding:0 50px; height:56px; font-size:1.1rem;">
-                <i class="material-icons left">arrow_back</i>
-                Voltar para o Feed
+            <a href="../index.php" class="btn-large grey darken-3 waves-effect waves-light" style="border-radius:30px; padding:0 50px; height:56px; font-size:1.1rem;">
+                Sair
             </a>
         </div>
-
     </div>
-
-    <script src="../js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            M.AutoInit();
-        });
-    </script>
 </body>
 </html>
