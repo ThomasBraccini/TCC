@@ -35,6 +35,7 @@
                 <a href="/TCC/feed.php" class="grey-text text-lighten-3" style="font-size: 1rem;">Feed</a>
                 <a href="/TCC/meu_perfil/meu_perfil.php" class="grey-text text-lighten-3" style="font-size: 1rem;">Perfil</a>
                 <a href="/TCC/upload_arquivos/publicar_arte.php" class="grey-text text-lighten-3" style="font-size: 1rem;">Publicar</a>
+                <a href="/TCC/noticias.php" class="grey-text text-lighten-3" style="font-size: 1rem;">Notícias</a>
             </div>
             <div style="color: white; font-size: 0.95rem;">
                 © <?= date('Y') ?> • IFFAR

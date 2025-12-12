@@ -1,39 +1,35 @@
 <?php
 session_start();
 require_once "conexao.php";
-
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+if (!isset($_GET['id']) or !is_numeric($_GET['id'])) {
     header("Location: noticias.php");
     exit;
 }
-
-$id_noticia = intval($_GET['id']);
-
-// Buscar notícia - CORRIGIDO para estrutura da tabela
-$sql = "SELECT n.* FROM noticias n WHERE n.id_noticia = ?";
-$stmt = mysqli_prepare($conexao, $sql);
-mysqli_stmt_bind_param($stmt, "i", $id_noticia);
-mysqli_stmt_execute($stmt);
-$resultado = mysqli_stmt_get_result($stmt);
+$id_noticia = $_GET['id'];
+// Busca a notícia no banco de dados
+$sql = "SELECT id_noticia, titulo, subtitulo, corpo, autor, caminho_midia, data_publicacao 
+        FROM noticias 
+        WHERE id_noticia = $id_noticia 
+        AND ativo = 1"; // Só mostra se estiver ativa
+$resultado = mysqli_query($conexao, $sql);
+// Se não encontrou a notícia, volta para a lista
+if (mysqli_num_rows($resultado) == 0) {
+    header("Location: noticias.php");
+    exit;
+}
+// Pega os dados da notícia como um array associativo
 $noticia = mysqli_fetch_assoc($resultado);
-
-if (!$noticia) {
-    header("Location: noticias.php");
-    exit;
-}
-
-// Atualizar visualizações
-mysqli_query($conexao, "UPDATE noticias SET visualizacoes = visualizacoes + 1 WHERE id_noticia = $id_noticia");
-
+// Formata a data para o padrão brasileiro (ex: 12/12/2025)
 $data_formatada = date('d/m/Y', strtotime($noticia['data_publicacao']));
-$tem_imagem = !empty($noticia['caminho_midia']) && file_exists("../uploads/noticias/" . $noticia['caminho_midia']);
+// Verifica se tem imagem e se o arquivo realmente existe no servidor
+$tem_imagem = !empty($noticia['caminho_midia']) &&  file_exists("../uploads/noticias/" . $noticia['caminho_midia']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($noticia['titulo']) ?> • NAC Portal</title>
+    <title><?= $noticia['titulo'] ?> • NAC Portal</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="../css/materialize.min.css" />
     <link type="text/css" rel="stylesheet" href="../css/style_todos.css" />
@@ -86,94 +82,56 @@ $tem_imagem = !empty($noticia['caminho_midia']) && file_exists("../uploads/notic
             font-size: 0.9rem;
             margin-top: 10px;
         }
+        .noticia-titulo {
+            font-size: 3.5rem !important;     /* Título bem grande */
+            font-weight: 700;
+            color: #333;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+        .noticia-subtitulo {
+            font-size: 2rem !important;       /* Subtítulo médio */
+            font-weight: 400;
+            font-style: italic;
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+        .noticia-conteudo {
+            font-size: 1.1rem;                /* Texto do corpo normal e legível */
+            line-height: 1.8;
+            color: #444;
+            text-align: justify;
+        }
+        .noticia-imagem {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
     <?php include_once "header.php"; ?>
-
     <main class="noticia-container">
-        <!-- Botão Voltar -->
-        <a href="noticias.php" class="btn btn-voltar teal waves-effect">
-            <i class="material-icons left">arrow_back</i> Voltar
-        </a>
-
-        <!-- Título -->
-        <h1 class="noticia-titulo"><?= htmlspecialchars($noticia['titulo']) ?></h1>
-        
-        <!-- Subtítulo -->
+        <h1 class="noticia-titulo center-align"><?= $noticia['titulo'] ?></h1>
         <?php if (!empty($noticia['subtitulo'])): ?>
-            <div class="noticia-subtitulo"><?= htmlspecialchars($noticia['subtitulo']) ?></div>
+            <h2 class="noticia-subtitulo center-align"><?= $noticia['subtitulo'] ?></h2>
         <?php endif; ?>
-        
-        <!-- Informações -->
-        <div class="noticia-data">
-            <i class="material-icons tiny">calendar_today</i>
+        <div class="noticia-data center-align grey-text text-darken-1" style="margin: 30px 0;">
             Publicado em: <?= $data_formatada ?>
-            
             <?php if (!empty($noticia['autor'])): ?>
                 <span style="margin-left: 20px;">
-                    <i class="material-icons tiny">person</i>
-                    Autor: <?= htmlspecialchars($noticia['autor']) ?>
-                </span>
-            <?php endif; ?>
-            
-            <?php if (!empty($noticia['categoria'])): ?>
-                <span style="margin-left: 20px;">
-                    <i class="material-icons tiny">category</i>
-                    Categoria: <?= htmlspecialchars($noticia['categoria']) ?>
+                    Por: <?= $noticia['autor'] ?>
                 </span>
             <?php endif; ?>
         </div>
-
-        <!-- Imagem -->
-        <?php if ($tem_imagem): ?>
-            <img src="../uploads/noticias/<?= $noticia['caminho_midia'] ?>" 
-                 alt="<?= htmlspecialchars($noticia['titulo']) ?>" 
-                 class="noticia-imagem responsive-img">
-            <?php if (!empty($noticia['creditos_midia'])): ?>
-                <p class="grey-text" style="font-size: 0.8rem; text-align: right; margin-top: -10px;">
-                    <i>Créditos: <?= htmlspecialchars($noticia['creditos_midia']) ?></i>
-                </p>
-            <?php endif; ?>
-        <?php endif; ?>
-
-        <!-- Conteúdo -->
         <div class="noticia-conteudo">
-            <?= nl2br(htmlspecialchars($noticia['corpo'])) ?>
-        </div>
-        
-        <!-- Tags -->
-        <?php if (!empty($noticia['tags'])): ?>
-            <div class="noticia-tags" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee;">
-                <i class="material-icons tiny">local_offer</i>
-                <strong>Tags:</strong>
-                <?php
-                $tags = explode(',', $noticia['tags']);
-                foreach ($tags as $tag):
-                    $tag = trim($tag);
-                    if (!empty($tag)):
-                ?>
-                    <span class="teal lighten-5 teal-text" style="padding: 2px 8px; border-radius: 10px; margin-right: 5px; font-size: 0.9rem;">
-                        <?= htmlspecialchars($tag) ?>
-                    </span>
-                <?php 
-                    endif;
-                endforeach; 
-                ?>
-            </div>
-        <?php endif; ?>
-        
-        <!-- Visualizações -->
-        <div class="noticia-info">
-            <div class="visualizacoes">
-                <i class="material-icons tiny">visibility</i>
-                Visualizações: <?= $noticia['visualizacoes'] ?>
-            </div>
+            <?= nl2br($noticia['corpo']) ?>
         </div>
     </main>
-
     <?php include_once "footer.php"; ?>
-    
     <script src="../js/materialize.min.js"></script>
 </body>
+</html>
 </html>
