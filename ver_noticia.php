@@ -9,8 +9,8 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $id_noticia = intval($_GET['id']);
 
-// Buscar notícia
-$sql = "SELECT n.* FROM noticia n WHERE n.id_noticia = ?";
+// Buscar notícia - CORRIGIDO para estrutura da tabela
+$sql = "SELECT n.* FROM noticias n WHERE n.id_noticia = ?";
 $stmt = mysqli_prepare($conexao, $sql);
 mysqli_stmt_bind_param($stmt, "i", $id_noticia);
 mysqli_stmt_execute($stmt);
@@ -23,10 +23,10 @@ if (!$noticia) {
 }
 
 // Atualizar visualizações
-mysqli_query($conexao, "UPDATE noticia SET visualizacoes = visualizacoes + 1 WHERE id_noticia = $id_noticia");
+mysqli_query($conexao, "UPDATE noticias SET visualizacoes = visualizacoes + 1 WHERE id_noticia = $id_noticia");
 
 $data_formatada = date('d/m/Y', strtotime($noticia['data_publicacao']));
-$tem_imagem = !empty($noticia['imagem_capa']) && file_exists("../uploads/noticias/" . $noticia['imagem_capa']);
+$tem_imagem = !empty($noticia['caminho_midia']) && file_exists("../uploads/noticias/" . $noticia['caminho_midia']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -79,6 +79,13 @@ $tem_imagem = !empty($noticia['imagem_capa']) && file_exists("../uploads/noticia
         .btn-voltar {
             margin-bottom: 20px;
         }
+        .noticia-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -98,22 +105,70 @@ $tem_imagem = !empty($noticia['imagem_capa']) && file_exists("../uploads/noticia
             <div class="noticia-subtitulo"><?= htmlspecialchars($noticia['subtitulo']) ?></div>
         <?php endif; ?>
         
-        <!-- Data -->
+        <!-- Informações -->
         <div class="noticia-data">
             <i class="material-icons tiny">calendar_today</i>
             Publicado em: <?= $data_formatada ?>
+            
+            <?php if (!empty($noticia['autor'])): ?>
+                <span style="margin-left: 20px;">
+                    <i class="material-icons tiny">person</i>
+                    Autor: <?= htmlspecialchars($noticia['autor']) ?>
+                </span>
+            <?php endif; ?>
+            
+            <?php if (!empty($noticia['categoria'])): ?>
+                <span style="margin-left: 20px;">
+                    <i class="material-icons tiny">category</i>
+                    Categoria: <?= htmlspecialchars($noticia['categoria']) ?>
+                </span>
+            <?php endif; ?>
         </div>
 
         <!-- Imagem -->
         <?php if ($tem_imagem): ?>
-            <img src="../uploads/noticias/<?= $noticia['imagem_capa'] ?>" 
+            <img src="../uploads/noticias/<?= $noticia['caminho_midia'] ?>" 
                  alt="<?= htmlspecialchars($noticia['titulo']) ?>" 
                  class="noticia-imagem responsive-img">
+            <?php if (!empty($noticia['creditos_midia'])): ?>
+                <p class="grey-text" style="font-size: 0.8rem; text-align: right; margin-top: -10px;">
+                    <i>Créditos: <?= htmlspecialchars($noticia['creditos_midia']) ?></i>
+                </p>
+            <?php endif; ?>
         <?php endif; ?>
 
         <!-- Conteúdo -->
         <div class="noticia-conteudo">
-            <?= nl2br(htmlspecialchars($noticia['conteudo'])) ?>
+            <?= nl2br(htmlspecialchars($noticia['corpo'])) ?>
+        </div>
+        
+        <!-- Tags -->
+        <?php if (!empty($noticia['tags'])): ?>
+            <div class="noticia-tags" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee;">
+                <i class="material-icons tiny">local_offer</i>
+                <strong>Tags:</strong>
+                <?php
+                $tags = explode(',', $noticia['tags']);
+                foreach ($tags as $tag):
+                    $tag = trim($tag);
+                    if (!empty($tag)):
+                ?>
+                    <span class="teal lighten-5 teal-text" style="padding: 2px 8px; border-radius: 10px; margin-right: 5px; font-size: 0.9rem;">
+                        <?= htmlspecialchars($tag) ?>
+                    </span>
+                <?php 
+                    endif;
+                endforeach; 
+                ?>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Visualizações -->
+        <div class="noticia-info">
+            <div class="visualizacoes">
+                <i class="material-icons tiny">visibility</i>
+                Visualizações: <?= $noticia['visualizacoes'] ?>
+            </div>
         </div>
     </main>
 
