@@ -135,7 +135,7 @@ if ($resultado) {
                                     <a href="#modal-denuncia-<?= $publicacao['id_publicacao'] ?>" 
                                         class="modal-trigger"
                                         style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #fff3e0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                        <i class="material-icons orange-text text-darken-3" style="font-size: 2rem;">flag</i>
+                                        <i class="material-icons red-text text-darken-3" style="font-size: 2rem;">flag</i>
                                     </a>
                                     <?php else: ?>
                                         <span style="width: 48px;"></span>

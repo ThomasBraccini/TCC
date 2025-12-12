@@ -58,7 +58,7 @@ if ($resultado) {
         <div class="row">
             <!-- CADASTRAR NOTÍCIA -->
             <div class="col s12 m6">
-                <a href="cadastrar_noticia.php" style="text-decoration:none; display:block;">
+                <a href="cadastrar_noticias.php" style="text-decoration:none; display:block;">
                     <div class="card admin-card z-depth-5">
                         <div class="card-image waves-effect waves-block waves-light" style="background: linear-gradient(135deg, #00695c, #009688); padding: 40px 20px;">
                             <h4 class="white-text center card-title-admin">
@@ -114,5 +114,6 @@ if ($resultado) {
             </a>
         </div>
     </div>
+    <?php include "footer.php"; ?>
 </body>
 </html>
