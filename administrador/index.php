@@ -48,6 +48,7 @@ if ($resultado) {
     </style>
 </head>
 <body>
+    <?php include_once "header.php"; ?>
     <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
         <h3 class="center teal-text text-darken-2" style="font-weight: 300;">
             <i class="material-icons large">admin_panel_settings</i><br>
@@ -58,12 +59,12 @@ if ($resultado) {
         <div class="row">
             <!-- CADASTRAR NOTÍCIA -->
             <div class="col s12 m6">
-                <a href="cadastrar_noticias.php" style="text-decoration:none; display:block;">
+                <a href="listagem_noticias.php" style="text-decoration:none; display:block;">
                     <div class="card admin-card z-depth-5">
                         <div class="card-image waves-effect waves-block waves-light" style="background: linear-gradient(135deg, #00695c, #009688); padding: 40px 20px;">
                             <h4 class="white-text center card-title-admin">
                                 <i class="material-icons large">post_add</i><br>
-                                Cadastrar Notícia
+                                Notícias
                             </h4>
                         </div>
                         <div class="card-content center" style="padding: 40px 20px;">

@@ -303,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 });
-</script>   
+</script>
+<?php include_once "footer.php"; ?>
 </body>
 </html>

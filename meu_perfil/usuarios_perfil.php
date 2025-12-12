@@ -6,6 +6,10 @@ if ($id_alvo <= 0) {
     header("Location: ../feed.php");
     exit;
 }
+if (isset($_SESSION['user_id']) && $id_alvo == $_SESSION['user_id']) {
+    header("Location: meu_perfil.php");
+    exit;
+}
 // === BUSCA USUÁRIO PÚBLICO ===
 $sql_usuario = "SELECT nome, email, preferencias, foto_perfil 
                 FROM usuario 

@@ -32,9 +32,11 @@
                 Núcleo de Arte e Cultura
             </div>
             <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                <a href="denunciar.php" class="grey-text text-lighten-3" style="font-size: 1rem;">Denúncias</a>
-                <a href="cadastrar_noticias.php" class="grey-text text-lighten-3" style="font-size: 1rem;">Notícias</a>
-            </div>
+            <a href="/TCC/administrador/index.php" class="white-text">Inicio</a>
+            <a href="/TCC/administrador/cadastrar_noticias.php" class="white-text">Cadastrar Notícia</a>
+            <a href="/TCC/administrador/denunciar.php" class="white-text">Denúncias</a></li>
+            <a href="/TCC/administrador/listagem_noticias.php" class="white-text">Notícias</a>
+            <a href="/TCC/logout.php" class="white-text">Sair</a>            </div>
             <div style="color: white; font-size: 0.95rem;">
                 © <?= date('Y') ?> • IFFAR
             </div>

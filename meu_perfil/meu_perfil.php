@@ -181,7 +181,7 @@ while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
                                 <div class="delete-btn">
                                     <a href="#modal-delete-<?= $publicacao['id_publicacao'] ?>" 
                                     class="modal-trigger btn-small red waves-effect waves-light">
-                                        <i class="material-icons left">delete</i> Excluir
+                                        <i class="material-icons left">delete</i> 
                                     </a>
                                 </div>
                             </div>

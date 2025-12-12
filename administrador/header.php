@@ -23,8 +23,10 @@
 
         <!-- MENU DIREITA - SOMENTE OPÇÕES DO ADMIN -->
         <ul class="right hide-on-med-and-down">
-            <li><a href="/TCC/administrador/index.php" class="white-text">Painel</a></li>
-            <li><a href="/TCC/administrador/cadastrar_noticia.php" class="white-text">Cadastrar Notícia</a></li>
+            <li><a href="/TCC/administrador/index.php" class="white-text">Inicio</a></li>
+            <li><a href="/TCC/administrador/cadastrar_noticias.php" class="white-text">Cadastrar Notícia</a></li>
+            <li><a href="/TCC/administrador/denunciar.php" class="white-text">Denúncias</a></li>
+            <li><a href="/TCC/administrador/listagem_noticias.php" class="white-text">Notícias</a></li>
             <li><a href="/TCC/logout.php" >Sair</a></li>
         </ul>
 
@@ -38,7 +40,7 @@
 <!-- Sidenav Mobile - Apenas opções admin -->
 <ul class="sidenav" id="mobile-nav-admin">
     <li><a href="/TCC/administrador/index.php">Painel Admin</a></li>
-    <li><a href="/TCC/administrador/cadastrar_noticia.php">Cadastrar Notícia</a></li>
+    <li><a href="/TCC/administrador/cadastrar_noticias.php">Cadastrar Notícia</a></li>
     <li><a href="/TCC/administrador/denunciar.php">Denúncias</a></li>
     <li class="divider"></li>
     <li><a href="/TCC/logout.php" class="red-text text-darken-1">Sair</a></li>
