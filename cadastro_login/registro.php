@@ -47,18 +47,21 @@ if (isset($_SESSION['user_id'])) {
                         <input type="email" name="email" id="email" required class="validate" maxlength="255"
                             placeholder="seu.email@aluno.iffar.edu.br">
                         <label for="email">E-mail</label>
+                        <span id="erro-email" style="color:red; font-size:13px;"></span>
                     </div>
                     <!-- SENHA -->
                     <div class="input-field col s12">
                         <input type="password" data-length="20" name="senha" id="senha" required class="validate" minlength="8"
                             placeholder="Senha">
                         <label for="senha">Senha (mín. 8 caracteres)</label>
+                        <span id="erro-senha" style="color:red; font-size:13px;"></span>
                     </div>
                     <!-- CONFIRMAR SENHA -->
                     <div class="input-field col s12">
                         <input type="password" data-length="20" name="confirma_senha" id="confirma_senha" required class="validate" minlength="8"
                             placeholder="Confirmar Senha">
                         <label for="confirma_senha">Confirmar Senha</label>
+                        <span id="erro-confirma" style="color:red; font-size:13px;"></span>
                     </div>
                     <!-- BIO (TEXTAREA) -->
                     <div class="input-field col s12">
@@ -131,6 +134,43 @@ if (isset($_SESSION['user_id'])) {
                     M.toast({html: 'A senha deve ter no mínimo 8 caracteres!', classes: 'red'});
                 }
             });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const email = document.getElementById("email");
+            const senha = document.getElementById("senha");
+            const confirma = document.getElementById("confirma_senha");
+
+            const erroEmail = document.getElementById("erro-email");
+            const erroSenha = document.getElementById("erro-senha");
+            const erroConfirma = document.getElementById("erro-confirma");
+
+            // EMAIL INVÁLIDO
+            email.addEventListener("input", function() {
+                const valido = email.checkValidity();
+                erroEmail.textContent = valido ? "" : "E-mail inválido";
+            });
+
+            // SENHA CURTA
+            senha.addEventListener("input", function() {
+                erroSenha.textContent = senha.value.length < 8 ? 
+                    "A senha deve ter no mínimo 8 caracteres" : "";
+            });
+
+            // SENHAS DIFERENTES
+            function validarSenhas() {
+                if (senha.value !== confirma.value) {
+                    erroConfirma.textContent = "As senhas não conferem";
+                } else {
+                    erroConfirma.textContent = "";
+                }
+            }
+
+            senha.addEventListener("input", validarSenhas);
+            confirma.addEventListener("input", validarSenhas);
+
         });
     </script>
 </body>
