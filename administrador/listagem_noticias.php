@@ -104,7 +104,7 @@ if ($resultado) {
                             <div class="card noticia-card hoverable">
                                 <div class="noticia-imagem-container">
                                     <?php if ($tem_imagem): ?>
-                                        <img src="../uploads/noticias/<?= htmlspecialchars($noticia['caminho_midia']) ?>" 
+                                        <img src="../uploads/noticias/<?= $noticia['caminho_midia'] ?>" 
                                             alt="<?= htmlspecialchars($noticia['titulo']) ?>" 
                                             class="noticia-imagem">
                                     <?php else: ?>
@@ -118,7 +118,7 @@ if ($resultado) {
                                     <h3 class="noticia-titulo"><?= htmlspecialchars($noticia['titulo']) ?></h3>
                                     
                                     <?php if (!empty($noticia['subtitulo'])): ?>
-                                        <p class="noticia-subtitulo"><?= htmlspecialchars($noticia['subtitulo']) ?></p>
+                                        <p class="noticia-subtitulo"><?= $noticia['subtitulo'] ?></p>
                                     <?php endif; ?>
                                     
                                     <p class="noticia-resumo"><?= htmlspecialchars($resumo) ?></p>

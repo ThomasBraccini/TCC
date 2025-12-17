@@ -299,5 +299,6 @@ while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
         M.Modal.init(document.querySelectorAll('.modal'), { opacity: 0.7 });
     });
 </script>
+    <?php include_once "../footer.php"; ?>
 </body>
 </html>
