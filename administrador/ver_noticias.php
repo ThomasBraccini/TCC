@@ -1,28 +1,32 @@
 <?php
 session_start();
 require_once "../conexao.php";
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    header("Location: ../index.php");
+    exit;
+}
+/* Validação do identificador da notícia */
 if (!isset($_GET['id']) or !is_numeric($_GET['id'])) {
     header("Location: noticias.php");
     exit;
 }
-$id_noticia = $_GET['id'];
-// Busca a notícia no banco de dados
+$id_noticia = (int) $_GET['id'];
+/* Consulta da notícia */
 $sql = "SELECT id_noticia, titulo, subtitulo, corpo, autor, caminho_midia, data_publicacao 
         FROM noticias 
-        WHERE id_noticia = $id_noticia 
-        AND ativo = 1"; // Só mostra se estiver ativa
+        WHERE id_noticia = $id_noticia";
 $resultado = mysqli_query($conexao, $sql);
-// Se não encontrou a notícia, volta para a lista
+/* Verifica se a notícia existe */
 if (mysqli_num_rows($resultado) == 0) {
     header("Location: noticias.php");
     exit;
 }
-// Pega os dados da notícia como um array associativo
+/* Recupera os dados da notícia */
 $noticia = mysqli_fetch_assoc($resultado);
-// Formata a data para o padrão brasileiro (ex: 12/12/2025)
+/* Formata a data para exibição */
 $data_formatada = date('d/m/Y', strtotime($noticia['data_publicacao']));
-// Verifica se tem imagem e se o arquivo realmente existe no servidor
-$tem_imagem = !empty($noticia['caminho_midia']) &&  file_exists("../uploads/noticias/" . $noticia['caminho_midia']);
+/* Verifica se há imagem válida associada */
+$tem_imagem = !empty($noticia['caminho_midia']) && file_exists("../uploads/noticias/" . $noticia['caminho_midia']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -83,14 +87,14 @@ $tem_imagem = !empty($noticia['caminho_midia']) &&  file_exists("../uploads/noti
             margin-top: 10px;
         }
         .noticia-titulo {
-            font-size: 3.5rem !important;     /* Título bem grande */
+            font-size: 3.5rem !important;   
             font-weight: 700;
             color: #333;
             line-height: 1.2;
             margin-bottom: 10px;
         }
         .noticia-subtitulo {
-            font-size: 2rem !important;       /* Subtítulo médio */
+            font-size: 2rem !important;      
             font-weight: 400;
             font-style: italic;
             color: #555;
@@ -98,8 +102,7 @@ $tem_imagem = !empty($noticia['caminho_midia']) &&  file_exists("../uploads/noti
             margin-bottom: 40px;
         }
         .noticia-conteudo {
-            font-size: 1.1rem;                /* Texto do corpo normal e legível */
-            line-height: 1.8;
+            font-size: 1.1rem;                
             color: #444;
             text-align: justify;
         }
@@ -130,9 +133,8 @@ $tem_imagem = !empty($noticia['caminho_midia']) &&  file_exists("../uploads/noti
             <?= nl2br($noticia['corpo']) ?>
         </div>
     </main>
-    <?php include_once "footer.php"; ?>
     <script src="../js/materialize.min.js"></script>
-<?php include_once "footer.php"; ?>
+    <?php include_once "footer.php"; ?>
 </body>
 </html>
 </html>

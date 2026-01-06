@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once "../conexao.php";
-// Proteção: só admin entra
 if (!isset($_SESSION['user_id']) or !isset($_SESSION['is_admin']) or $_SESSION['is_admin'] != 1) {
     header("Location: ../index.php");
     exit;

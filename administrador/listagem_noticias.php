@@ -1,25 +1,21 @@
 <?php
 session_start();
-require_once "../conexao.php"; // Caminho correto (está dentro da pasta administrador)
-
-// Verifica se é admin
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+require_once "../conexao.php"; 
+if (!isset($_SESSION['is_admin']) or $_SESSION['is_admin'] != 1) {
     header("Location: ../noticias.php");
     exit;
 }
-
-// Exclusão de notícia (soft delete)
+// Verificação de exclusão e exclusão da notícia
 if (isset($_GET['excluir']) && is_numeric($_GET['excluir'])) {
-    $id_excluir = (int)$_GET['excluir'];
-    $sql_delete = "UPDATE noticias SET ativo = 0 WHERE id_noticia = $id_excluir";
+    $id_excluir = (int) $_GET['excluir'];
+    $sql_delete = "DELETE FROM noticias WHERE id_noticia = $id_excluir";
     if (mysqli_query($conexao, $sql_delete)) {
         header("Location: listagem_noticias.php?excluido=ok");
         exit;
     } else {
-        echo "<script>alert('Erro ao excluir notícia.');</script>";
+        echo "<script>alert('Erro ao excluir notícia do banco de dados.');</script>";
     }
 }
-
 $sql = "SELECT noticias.id_noticia, 
                 noticias.titulo, 
                 noticias.subtitulo, 
@@ -30,10 +26,8 @@ $sql = "SELECT noticias.id_noticia,
         FROM noticias
         WHERE noticias.ativo = 1
         ORDER BY noticias.data_publicacao DESC";    
-
 $resultado = mysqli_query($conexao, $sql);
 $noticias = [];
-
 if ($resultado) {
     while ($registro = mysqli_fetch_assoc($resultado)) {
         $noticias[] = $registro;
@@ -59,13 +53,11 @@ if ($resultado) {
             <h5>Confirmar exclusão</h5>
             <p>Tem certeza que deseja excluir esta notícia?<br>Esta ação não pode ser desfeita.</p>
         </div>
-
         <div class="modal-footer">
             <a class="modal-close btn grey">Cancelar</a>
             <a id="btnConfirmarExcluir" class="btn red">Excluir</a>
         </div>
     </div>
-
     <!-- MODAL DE SUCESSO APÓS EXCLUSÃO -->
     <div id="modalExcluido" class="modal">
         <div class="modal-content center">
@@ -73,7 +65,6 @@ if ($resultado) {
             <h5>Notícia excluída</h5>
             <p>A notícia foi excluída com sucesso.</p>
         </div>
-
         <div class="modal-footer">
             <a href="listagem_noticias.php" class="btn green modal-close">OK</a>
         </div>
@@ -81,15 +72,16 @@ if ($resultado) {
     <main class="container">
         <div class="page-title">
             <h2>Gerenciar Notícias</h2>
-            <p>Lista completa das notícias publicadas - área administrativa</p>
+            <p>Lista completa das notícias publicadas</p>
         </div>
-
+        <!-- verifica se existe notícias -->
         <?php if (empty($noticias)): ?>
             <div class="card-panel no-noticias">
                 <i class="material-icons">newspaper</i>
                 <h5>Nenhuma notícia publicada</h5>
                 <p>Em breve teremos novidades para você!</p>
             </div>
+        <!-- se existir notícias, exibe elas -->
         <?php else: ?>
             <div class="row">
                 <?php foreach ($noticias as $noticia): 
@@ -99,13 +91,14 @@ if ($resultado) {
                     $tem_imagem = !empty($noticia['caminho_midia']) && file_exists("../uploads/noticias/" . $noticia['caminho_midia']);
                 ?>
                     <div class="col s12 m6 l4">
-                        <!-- Link clicável em todo o card (igual ao do usuário) -->
+                        <!-- Link clicável em todo o card-->
                         <a href="ver_noticias.php?id=<?= $noticia['id_noticia'] ?>" class="black-text" style="text-decoration: none;">
                             <div class="card noticia-card hoverable">
                                 <div class="noticia-imagem-container">
+                                    <!-- Exibe a imagem se existir -->
                                     <?php if ($tem_imagem): ?>
                                         <img src="../uploads/noticias/<?= $noticia['caminho_midia'] ?>" 
-                                            alt="<?= htmlspecialchars($noticia['titulo']) ?>" 
+                                            alt="<?= $noticia['titulo'] ?>" 
                                             class="noticia-imagem">
                                     <?php else: ?>
                                         <div style="background: linear-gradient(135deg, #009688, #4DB6AC); height: 100%; display: flex; align-items: center; justify-content: center;">
@@ -113,16 +106,13 @@ if ($resultado) {
                                         </div>
                                     <?php endif; ?>
                                 </div>
-                                
+                                <!-- Conteúdo da notícia -->
                                 <div class="noticia-conteudo">
-                                    <h3 class="noticia-titulo"><?= htmlspecialchars($noticia['titulo']) ?></h3>
-                                    
+                                    <h3 class="noticia-titulo"><?= $noticia['titulo'] ?></h3>
                                     <?php if (!empty($noticia['subtitulo'])): ?>
                                         <p class="noticia-subtitulo"><?= $noticia['subtitulo'] ?></p>
                                     <?php endif; ?>
-                                    
-                                    <p class="noticia-resumo"><?= htmlspecialchars($resumo) ?></p>
-                                    
+                                    <p class="noticia-resumo"><?= $resumo ?></p>
                                     <div class="noticia-meta">
                                         <div class="noticia-data">
                                             <i class="material-icons tiny">calendar_today</i>
@@ -145,41 +135,44 @@ if ($resultado) {
             </div>
         <?php endif; ?>
     </main>
-    <?php include_once "footer.php"; ?>
     <script type="text/javascript" src="../js/materialize.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Página de gerenciamento de notícias carregada');
-        });
     </script>
     <script>
-    let excluirID = null;
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var modals = document.querySelectorAll('.modal');
-        M.Modal.init(modals);
-
-        // Se a URL vier com ?excluido=ok, abre o modal de sucesso
-        <?php if (isset($_GET['excluido']) && $_GET['excluido'] == 'ok'): ?>
-            var modalOK = M.Modal.getInstance(document.getElementById('modalExcluido'));
-            modalOK.open();
-        <?php endif; ?>
-    });
-
-    // Função para abrir o modal de confirmação
-    function abrirModalExcluir(id) {
-        excluirID = id;
-        var modal = M.Modal.getInstance(document.getElementById('modalConfirmarExclusao'));
-        modal.open();
-    }
-
-    // Quando clicar no botão confirmar exclusão
-    document.addEventListener('click', function(e) {
-        if (e.target.id === 'btnConfirmarExcluir') {
-            window.location = `listagem_noticias.php?excluir=${excluirID}&excluido=ok`;
+        /* Guarda o ID da notícia que será excluída */
+        let excluirID = null;
+        /* Executa quando o HTML terminar de carregar */
+        document.addEventListener('DOMContentLoaded', function() {
+            /* Seleciona todos os modais da página */
+            var modals = document.querySelectorAll('.modal');
+            /* Inicializa os modais do Materialize */
+            M.Modal.init(modals);
+            /* Se a exclusão foi concluída, abre o modal de sucesso */
+            <?php if (isset($_GET['excluido']) && $_GET['excluido'] == 'ok'): ?>
+                M.Modal.getInstance(
+                    document.getElementById('modalExcluido')
+                ).open();
+            <?php endif; ?>
+        });
+        /* Abre o modal de confirmação de exclusão */
+        function abrirModalExcluir(id) {
+            /* Armazena o ID da notícia selecionada */
+            excluirID = id;
+            /* Abre o modal de confirmação */
+            M.Modal.getInstance(
+                document.getElementById('modalConfirmarExclusao')
+            ).open();
         }
-    });
+        /* Detecta cliques na página */
+        document.addEventListener('click', function(e) {
+            /* Verifica se o botão de confirmar exclusão foi clicado */
+            if (e.target.id === 'btnConfirmarExcluir') {
+                /* Redireciona para o PHP com o ID da notícia */
+                window.location =
+                    `listagem_noticias.php?excluir=${excluirID}&excluido=ok`;
+            }
+        });
     </script>
-<?php include_once "footer.php"; ?>
+    <?php include_once "footer.php"; ?>
 </body>
 </html>
