@@ -5,7 +5,7 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
         'titulo' => 'E-mail Verificado!',
         'mensagem' => 'Seu e-mail foi verificado com sucesso. Agora você pode fazer login.',
         'botao' => 'Ir para Login',
-        'link' => 'feed.php'
+        'link' => 'index.php'
     ];
 }
 ?>

@@ -25,13 +25,6 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     <?php endif; ?>
-    <?php if (isset($_GET['success'])): ?>
-        <div class="container">
-            <div class="card-panel green lighten-4 green-text text-darken-1">
-                <?= $_GET['success'] ?>
-            </div>
-        </div>
-    <?php endif; ?>
     <div class="login-container">
         <div class="login-card">
             <h2 class="login-title">Recuperar Senha</h2>
@@ -60,7 +53,37 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
+    <!-- MODAL SUCESSO -->
+    <div id="modalSucesso" class="modal">
+        <div class="modal-content center">
+            <i class="material-icons large green-text">check_circle</i>
+            <h5>Link enviado com sucesso</h5>
+            <p>
+                Se o e-mail informado estiver cadastrado, você receberá um link
+                para redefinir sua senha em alguns instantes.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <a href="esqueci_senha.php" class="modal-close btn teal">
+                Ok
+            </a>
+        </div>
+    </div>
     <!-- JS -->
     <script type="text/javascript" src="../js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modais = document.querySelectorAll('.modal');
+            M.Modal.init(modais);
+            // Se veio ?success=1, abre o modal automaticamente
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('success') === '1') {
+                var modal = M.Modal.getInstance(
+                    document.getElementById('modalSucesso')
+                );
+                modal.open();
+            }
+        });
+    </script>
 </body>
 </html>
