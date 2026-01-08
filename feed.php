@@ -75,7 +75,7 @@ if ($resultado) {
                     $thumbnail = "uploads/thumbnail_" . pathinfo($publicacao['caminho_arquivo'], PATHINFO_FILENAME) . ".jpg";
                     $data_formatada = date('d/m/Y', strtotime($publicacao['data_publicacao']));
                     $dono = $publicacao['id_usuario_fk'] == $_SESSION['user_id'];
-                    $titulo_lower = strtolower($publicacao['titulo']);
+                    $titulo_pesquisa = strtolower($publicacao['titulo']);
                     // Verifica se já está salvo
                     $ja_salvo = false;
                     $check_salvo = mysqli_query($conexao, 
@@ -84,7 +84,7 @@ if ($resultado) {
                         $ja_salvo = true;
                     }
                     ?>
-                    <div class="feed-col col l4" style="padding: 0.75rem;" data-titulo="<?= $titulo_lower ?>">
+                    <div class="feed-col col l4" style="padding: 0.75rem;" data-titulo="<?= $titulo_pesquisa ?>">
                         <div class="card feed-card">
                             <!-- MÍDIA -->
                             <?php if ($publicacao['tipo_arquivo'] == 'imagem'): ?>
