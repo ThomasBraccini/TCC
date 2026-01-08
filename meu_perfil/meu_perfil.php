@@ -35,7 +35,6 @@ $sql_publicacoes = "SELECT
                     WHERE id_usuario_fk = " . $_SESSION['user_id'] . " 
                     AND deleted_at IS NULL
                     ORDER BY data_publicacao";
-                    
 $result_publicacoes = mysqli_query($conexao, $sql_publicacoes);
 $publicacoes = [];
 while ($publicacao = mysqli_fetch_assoc($result_publicacoes)) {
@@ -43,16 +42,18 @@ while ($publicacao = mysqli_fetch_assoc($result_publicacoes)) {
 }
 // ADICIONE AQUI: BUSCA PUBLICAÇÕES SALVAS
 $sql_salvos = "SELECT 
-                p.id_publicacao, p.titulo, p.caminho_arquivo, p.tipo_arquivo, p.descricao,
-                DATE_FORMAT(p.data_publicacao, '%d/%m/%Y') AS data_pub_fmt,
-                u.nome AS nome_autor
-            FROM salvos s
-            JOIN publicacao p ON s.id_publicacao = p.id_publicacao
-            JOIN usuario u ON p.id_usuario_fk = u.id_usuario
-            WHERE s.id_usuario = " . $_SESSION['user_id'] . "
-            AND p.deleted_at IS NULL
-            ORDER BY s.data_salvo DESC";
-
+                    publicacao.id_publicacao, 
+                    publicacao.titulo, 
+                    publicacao.caminho_arquivo, 
+                    publicacao.tipo_arquivo, 
+                    publicacao.descricao,
+                    DATE_FORMAT(publicacao.data_publicacao, '%d/%m/%Y') AS data_pub_fmt,
+                    usuario.nome AS nome_autor
+                FROM salvos
+                JOIN publicacao ON salvos.id_publicacao = publicacao.id_publicacao
+                JOIN usuario ON publicacao.id_usuario_fk = usuario.id_usuario
+                WHERE salvos.id_usuario = " . $_SESSION['user_id'] . "
+                    ORDER BY publicacao.data_publicacao DESC";
 $resultado_salvos = mysqli_query($conexao, $sql_salvos);
 $salvos = [];
 while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
@@ -103,7 +104,6 @@ while ($salvo = mysqli_fetch_assoc($resultado_salvos)) {
                             <?php if (!empty($preferencias)): ?>
                                 <p><?= $preferencias ?></p>
                             <?php endif; ?>
-                            <!-- LINK CORRIGIDO: MESMA PASTA -->
                             <a href="editar_perfil.php" class="btn waves-effect waves-light teal">Editar Perfil</a>
                         </div>
                     </div>
