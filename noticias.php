@@ -9,7 +9,6 @@ $sql = "SELECT noticias.id_noticia,
                 noticias.data_publicacao, 
                 noticias.autor 
         FROM noticias
-        WHERE noticias.ativo = 1
         ORDER BY noticias.data_publicacao DESC";    
 $resultado = mysqli_query($conexao, $sql);
 $noticias = [];

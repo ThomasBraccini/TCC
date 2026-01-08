@@ -9,8 +9,7 @@ $id_noticia = $_GET['id'];
 // Busca a notícia no banco de dados
 $sql = "SELECT id_noticia, titulo, subtitulo, corpo, autor, caminho_midia, data_publicacao 
         FROM noticias 
-        WHERE id_noticia = $id_noticia 
-        AND ativo = 1"; // Só mostra se estiver ativa
+        WHERE id_noticia = $id_noticia";
 $resultado = mysqli_query($conexao, $sql);
 // Se não encontrou a notícia, volta para a lista
 if (mysqli_num_rows($resultado) == 0) {

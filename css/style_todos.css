@@ -1,457 +1,390 @@
-/* Feed Styles */
-        .feed-card {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        .feed-card:hover {
-            transform: translateY(-4px);
-        }
-        .feed-media-container {
-            position: relative;
-            height: 300px;
-            overflow: hidden;
-            background: #000;
-        }
-        .feed-img, .feed-video {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            display: block;
-        }
-        .play-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4rem;
-            color: rgba(255,255,255,0.8);
-            pointer-events: none;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            z-index: 1;
-        }
-        .card-content-feed {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-        }
-        .card-title-feed {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #00695c;
-            margin: 0 0 0.5rem 0;
-            line-height: 1.3;
-        }
-        .autor-chip {
-            background: #00695c;
-            color: white;
-            font-weight: 500;
-            font-size: 0.85rem;
-            height: 28px;
-            line-height: 28px;
-            padding: 0 10px;
-            border-radius: 14px;
-            display: inline-block;
-        }
-        .feed-description {
-            flex-grow: 1;
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
-            color: #555;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-        }
-        /* === ALTERAÇÃO PRINCIPAL: garante espaço reservado para o botão excluir === */
-        .delete-btn {
-            margin-top: 0.75rem;
-            text-align: right;
-            /* Reserva altura mínima para todos os cards acomodarem o botão */
-            min-height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        .delete-placeholder {
-            /* ocupa o mesmo espaço do botão, mas fica invisível */
-            visibility: hidden;
-            height: 36px;
-            width: auto;
-        }
-        .no-content {
-            text-align: center;
-            padding: 3rem;
-            color: #999;
-        }
-        /* Força 3 colunas em desktop */
-        @media (min-width: 992px) {
-            .feed-col {
-                width: 33.333%;
-                padding: 0 0.75rem;
-                box-sizing: border-box;
-            }
-        }
-        .feed-audio-container {
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-bottom: 3px solid #00695c;
-        }
-        .audio-icon {
-            font-size: 4rem;
-            color: #00695c;
-            margin-bottom: 1rem;
-        }
-        .feed-audio {
-            width: 80%;
-            max-width: 300px;
-            height: 40px;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-    /*Fecha feed styles*/
-
-    /* Header Styles */
+/* FEED DE ARTES  */
+/* Card principal do feed - ocupa toda altura e usa flex para distribuição */
+.feed-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.feed-card:hover {
+    transform: translateY(-4px); /* Elevação suave ao passar o mouse */
+}
+/* Container da mídia (imagem, vídeo ou áudio) */
+.feed-media-container {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    background: #000;
+}
+.feed-img, .feed-video {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+/* Ícone de play sobre vídeos */
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    color: rgba(255,255,255,0.8);
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 1;
+}
+/* Conteúdo textual do card */
+.card-content-feed {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+.card-title-feed {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #00695c;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+}
+/* Chip com nome do autor */
+.autor-chip {
+    background: #00695c;
+    color: white;
+    font-weight: 500;
+    font-size: 0.85rem;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+    border-radius: 14px;
+    display: inline-block;
+}
+/* Descrição com corte automático */
+.feed-description {
+    flex-grow: 1;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: #555;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+/* Botão de excluir - reserva espaço fixo para alinhar cards */
+.delete-btn {
+    margin-top: 0.75rem;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.delete-placeholder {
+    visibility: hidden;
+    height: 36px;
+}
+/* Mensagem quando não há conteúdo */
+.no-content {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+}
+/* Força 3 colunas em telas grandes */
+@media (min-width: 992px) {
+    .feed-col {
+        width: 33.333%;
+        padding: 0 0.75rem;
+        box-sizing: border-box;
+    }
+}
+/* Estilo específico para áudio */
+.feed-audio-container {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 3px solid #00695c;
+}
+.audio-icon {
+    font-size: 4rem;
+    color: #00695c;
+    margin-bottom: 1rem;
+}
+.feed-audio {
+    width: 80%;
+    max-width: 300px;
+    height: 40px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+/* HEADER */
 /* Altura fixa da navbar */
-        nav { height: 64px; line-height: 64px; }
-        nav .brand-logo { line-height: 64px; font-weight: 500; }
-        
-        /* Barra de busca centralizada */
-        .search-wrapper {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .search-wrapper input {
-            height: 40px !important;
-            border-radius: 25px;
-            padding-left: 45px !important;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .search-wrapper i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-        }
-    /* Fecha Header Styles */
-    /* Login pagina Styles */
-            body {
-            background: #f5f5f5;
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .logo-if img {
-            height: 60px;
-            margin-right: 15px;
-        }
-        .logo-text {
-            color: white;
-            font-weight: 700;
-            font-size: 1.4rem;
-            line-height: 1.2;
-            text-transform: uppercase;
-        }
-        .title-nac {
-            background: #00897b; 
-            color: white;
-            text-align: center;
-            padding: 1.5rem 0;
-            font-size: 2.2rem;
-            font-weight: 600;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .login-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
-        .login-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 420px;
-        }
-        .login-title {
-            font-size: 1.6rem;
-            font-weight: 500;
-            color: #00695c;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .input-field input {
-            font-size: 1rem ;
-            padding: 0 1rem ;
-        }
-        .input-field label {
-            color: #555;
-            font-size: 1rem;
-        }
-        .btn-login {
-            background: #00897b;
-            width: 100%;
-            height: 48px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 1.5rem 0;
-        }
-        .btn-login:hover {
-            background: #00695c;
-        }
-        .login-links {
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .login-links a {
-            color: #00897b;
-            font-size: 0.95rem;
-            display: block;
-            margin: 0.5rem 0;
-        }
-        .login-links a:hover {
-            text-decoration: underline;
-        }
-    /* Fecha Login pagina Styles */
-    /*publicar Arte*/
-        .upload-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            min-height: calc(100vh - 140px);
-        }
-        .upload-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 560px;
-        }
-        .upload-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #00695c;
-            text-align: center;
-            margin-bottom: 2rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .btn-upload {
-            background: #00897b;
-            width: 100%;
-            height: 52px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 1.5rem;
-        }
-        .btn-upload:hover {
-            background: #00695c;
-        }
-        .btn-cancel {
-            background: #b0bec5 !important;
-            color: #263238 !important;
-        }
-        .btn-cancel:hover {
-            background: #90a4ae !important;
-        }
-        .file-field .btn {
-            background: #00695c;
-        }
-        .file-field .btn:hover {
-            background: #004d40;
-        }
-        /* Preview da imagem */
-        #preview-container {
-            margin-top: 1rem;
-            text-align: center;
-            display: none;
-        }
-        #preview-img, #preview-video {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .audio-preview {
-            width: 100%;
-            max-width: 400px;
-            height: 50px;
-            margin-top: 1rem;
-        }
-    /* Fecha publicar Arte */
-    /*cadastrar noticias*/
-    .card-noticia {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            margin-top: 30px;
-        }
-        .card-noticia .card-content {
-            padding: 30px;
-        }
-        .input-field input[type=text]:focus, 
-        .input-field textarea:focus {
-            border-bottom: 2px solid #009688 !important;
-            box-shadow: 0 1px 0 0 #009688 !important;
-        }
-        .btn-large {
-            border-radius: 30px;
-            padding: 0 40px;
-            font-weight: 600;
-            text-transform: none;
-            height: 50px;
-            line-height: 50px;
-        }
-        .switch label input[type=checkbox]:checked + .lever {
-            background-color: #4CAF50;
-        }
-        .switch label .lever {
-            background-color: #ccc;
-        }
-    /* Fecha cadastrar noticias */
-    /*noticias styles*/
-        .noticia-card {
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            height: 100%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        .noticia-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        .noticia-imagem-container {
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-        }
-        .noticia-imagem {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        .noticia-card:hover .noticia-imagem {
-            transform: scale(1.05);
-        }
-        .noticia-conteudo {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100% - 200px);
-        }
-        .noticia-titulo {
-            font-size: 1.2rem;
-            font-weight: 600;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .noticia-subtitulo {
-            color: #666;
-            font-size: 0.95rem;
-            font-style: italic;
-            margin-bottom: 10px;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .noticia-resumo {
-            color: #666;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .noticia-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-            font-size: 0.85rem;
-            color: #888;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        .noticia-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .noticia-categoria {
-            background: #009688;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-        }
-        .noticia-data {
-            display: flex;
-            align-items: center;
-        }
-        .noticia-data i {
-            margin-right: 5px;
-            font-size: 1rem;
-        }
-        .noticia-visualizacoes {
-            display: flex;
-            align-items: center;
-        }
-        .noticia-visualizacoes i {
-            margin-right: 5px;
-        }
-        .no-noticias {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .no-noticias i {
-            font-size: 4rem;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-        .page-title {
-            margin: 30px 0 40px;
-            text-align: center;
-        }
-        .page-title h2 {
-            font-weight: 300;
-            color: #009688;
-            margin-bottom: 10px;
-        }
-        .page-title p {
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+nav {
+    height: 64px;
+    line-height: 64px;
+}
+nav .brand-logo {
+    line-height: 64px;
+    font-weight: 500;
+}
+/* Barra de busca centralizada */
+.search-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+}
+.search-wrapper input {
+    height: 40px !important;
+    border-radius: 25px;
+    padding-left: 45px !important;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.search-wrapper i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+/* PÁGINA DE LOGIN */
+body {
+    background: #f5f5f5;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+/* Título principal da página de login */
+.title-nac {
+    background: #00897b;
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+/* Centralização do formulário de login */
+.login-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+.login-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 420px;
+}
+.login-title {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #00695c;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+/* Botões e links da tela de login */
+.btn-login {
+    background: #00897b;
+    width: 100%;
+    height: 48px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 1.5rem 0;
+}
+.btn-login:hover {
+    background: #00695c;
+}
+.login-links a {
+    color: #00897b;
+    font-size: 0.95rem;
+    display: block;
+    margin: 0.5rem 0;
+}
+.login-links a:hover {
+    text-decoration: underline;
+}
+/* PÁGINA DE PUBLICAR ARTE */
+.upload-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    min-height: calc(100vh - 140px);
+}
+.upload-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 560px;
+}
+.upload-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #00695c;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+/* Botões da tela de upload */
+.btn-upload {
+    background: #00897b;
+    width: 100%;
+    height: 52px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1.5rem;
+}
+.btn-upload:hover { background: #00695c; }
+.btn-cancel { background: #b0bec5 !important; color: #263238 !important; }
+.btn-cancel:hover { background: #90a4ae !important; }
+.file-field .btn { background: #00695c; }
+.file-field .btn:hover { background: #004d40; }
+/* Preview de mídia no upload */
+#preview-container { margin-top: 1rem; text-align: center; display: none; }
+#preview-img, #preview-video {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.audio-preview {
+    width: 100%;
+    max-width: 400px;
+    height: 50px;
+    margin-top: 1rem;
+}
+/* CADASTRAR NOTÍCIAS*/
+.card-noticia {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-top: 30px;
+}
+.card-noticia .card-content { padding: 30px; }
+/* Destaque ao focar em campos */
+.input-field input[type=text]:focus,
+.input-field textarea:focus {
+    border-bottom: 2px solid #009688 !important;
+    box-shadow: 0 1px 0 0 #009688 !important;
+}
+/* Botões grandes arredondados */
+.btn-large {
+    border-radius: 30px;
+    padding: 0 40px;
+    font-weight: 600;
+    text-transform: none;
+    height: 50px;
+    line-height: 50px;
+}
+/*LISTAGEM E VISUALIZAÇÃO DE NOTÍCIAS */
+/* Card de notícia na listagem */
+.noticia-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.noticia-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+/* Imagem da notícia */
+.noticia-imagem-container { height: 200px; overflow: hidden; position: relative; }
+.noticia-imagem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.noticia-card:hover .noticia-imagem { transform: scale(1.05); }
+/* Conteúdo textual */
+.noticia-conteudo {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 200px);
+}
+.noticia-titulo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.noticia-subtitulo {
+    color: #666;
+    font-size: 0.95rem;
+    font-style: italic;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.noticia-resumo {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+/* Rodapé com data e metadados */
+.noticia-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    font-size: 0.85rem;
+    color: #888;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+/* Mensagem quando não há notícias */
+.no-noticias {
+    text-align: center;
+    padding: 60px 20px;
+}
+.no-noticias i {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+/* Título da página */
+.page-title {
+    margin: 30px 0 40px;
+    text-align: center;
+}
+.page-title h2 {
+    font-weight: 300;
+    color: #009688;
+    margin-bottom: 10px;
+}
+.page-title p {
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
