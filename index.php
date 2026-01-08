@@ -33,28 +33,23 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
             <h2 class="login-title">Entrar no NAC Portal</h2>
             <form action="cadastro_login/processa_login.php" method="POST">
                 <div class="row">
-
                     <!-- CAMPO EMAIL -->
                     <div class="input-field col s12">
                         <input type="email" name="email" id="email" required class="validate" 
                             placeholder="seu.email@iffarroupilha.edu.br">
                         <label for="email">E-mail</label>
-
                         <?php if (isset($_GET['erro_email'])): ?>
                             <span style="color:red; font-size:14px;">E-mail incorreto.</span>
                         <?php endif; ?>
                     </div>
-
                     <!-- CAMPO SENHA -->
                     <div class="input-field col s12">
                         <input type="password" name="senha" id="senha" required class="validate" placeholder="Sua senha">
                         <label for="senha">Senha</label>
-
                         <?php if (isset($_GET['erro_senha'])): ?>
                             <span style="color:red; font-size:14px;">Senha incorreta.</span>
                         <?php endif; ?>
                     </div>
-
                     <!-- BOTÃO -->
                     <div class="col s12">
                         <button type="submit" class="btn waves-effect waves-light btn-login">
@@ -63,14 +58,12 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
                     </div>
                 </div>
             </form>
-
             <div class="login-links">
                 <a href="cadastro_login/registro.php">Não tem uma conta? Cadastre-se agora</a>
                 <a href="cadastro_login/esqueci_senha.php">Esqueceu a senha?</a>
             </div>
         </div>
     </div>
-
     <!-- Modal existente (não alterado, pois você pediu sem modal agora) -->
     <div id="modalSucesso" class="modal">
         <div class="modal-content">
@@ -81,9 +74,7 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
             <a href="#" id="modalBotao" class="modal-close waves-effect waves-green btn-flat"></a>
         </div>
     </div>
-
     <script type="text/javascript" src="js/materialize.min.js"></script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var senha = document.getElementById('senha');
@@ -103,12 +94,10 @@ if (isset($_GET['email_verificado']) && $_GET['email_verificado'] == 1) {
             };
         });
     </script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var modalElems = document.querySelectorAll('.modal');
             var modalInstances = M.Modal.init(modalElems);
-
             <?php if (isset($_SESSION['modal_sucesso'])): ?>
                 var modalData = <?= json_encode($_SESSION['modal_sucesso']) ?>;
                 document.getElementById('modalTitulo').textContent = modalData.titulo;

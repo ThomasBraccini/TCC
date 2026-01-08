@@ -13,7 +13,6 @@ $sql = "SELECT noticias.id_noticia,
         ORDER BY noticias.data_publicacao DESC";    
 $resultado = mysqli_query($conexao, $sql);
 $noticias = [];
-
 if ($resultado) {
     while ($registro = mysqli_fetch_assoc($resultado)) {
         $noticias[] = $registro;
@@ -37,7 +36,6 @@ if ($resultado) {
             <h2>Notícias</h2>
             <p>Fique por dentro das últimas novidades, eventos e destaques do NAC</p>
         </div>
-
         <?php if (empty($noticias)): ?>
             <div class="card-panel no-noticias">
                 <i class="material-icons">newspaper</i>
@@ -49,9 +47,16 @@ if ($resultado) {
                 <?php foreach ($noticias as $noticia): 
                     // Criar resumo do conteúdo
                     $resumo = $noticia['corpo'];
-                    $resumo = strlen($resumo) > 150 ? substr($resumo, 0, 150) . '...' : $resumo;
+                    if (strlen($resumo) > 150) {
+                        $resumo = substr($resumo, 0, 150) . '...';
+                    }
                     $data_formatada = date('d/m/Y', strtotime($noticia['data_publicacao']));
-                    $tem_imagem = !empty($noticia['caminho_midia']) && file_exists("uploads/noticias/" . $noticia['caminho_midia']);
+                    // Verifica se a notícia possui imagem válida
+                    if (!empty($noticia['caminho_midia']) && file_exists("uploads/noticias/" . $noticia['caminho_midia'])) {
+                        $tem_imagem = true;
+                    } else {
+                        $tem_imagem = false;
+                    }
                 ?>
                     <div class="col s12 m6 l4">
                         <a href="ver_noticia.php?id=<?= $noticia['id_noticia'] ?>" class="black-text" style="text-decoration: none;">
@@ -68,9 +73,7 @@ if ($resultado) {
                                     <?php endif; ?>
                                 </div>
                                 <div class="noticia-conteudo">
-                                    
                                     <h3 class="noticia-titulo"><?= $noticia['titulo'] ?></h3>
-                                    
                                     <?php if (!empty($noticia['subtitulo'])): ?>
                                         <p class="noticia-subtitulo"><?= $noticia['subtitulo'] ?></p>
                                     <?php endif; ?>

@@ -78,20 +78,31 @@
     document.addEventListener('DOMContentLoaded', function() {
         M.Sidenav.init(document.querySelectorAll('.sidenav'));
         M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+        // Executa a lógica de pesquisa somente na página feed.php
         <?php if (basename($_SERVER['PHP_SELF']) === 'feed.php'): ?>
             const searchDesktop = document.getElementById('globalSearch');
             const searchMobile = document.getElementById('globalSearchMobile');
+            // Seleciona todos os cards de publicação do feed
             const cards = document.querySelectorAll('.feed-col');
+            // Função responsável por filtrar as publicações pelo título
             const filterByTitle = (query) => {
+                // Normaliza o texto digitado
                 query = query.toLowerCase().trim();
+                // Percorre todos os cards do feed
                 cards.forEach(card => {
+                    // Obtém o título da publicação armazenado no atributo data-titulo
                     const titulo = (card.getAttribute('data-titulo') || '').toLowerCase();
+                    // Exibe o card se o título conter o texto pesquisado
+                    // Oculta o card se não houver correspondência
                     card.style.display = query === '' || titulo.includes(query) ? '' : 'none';
                 });
             };
             [searchDesktop, searchMobile].forEach(input => {
+                // Verifica se o campo existe na página
                 if (input) {
+                    // Filtra enquanto o usuário digita
                     input.addEventListener('input', e => filterByTitle(e.target.value));
+                    // Garante compatibilidade com navegadores antigos
                     input.addEventListener('keyup', e => filterByTitle(e.target.value));
                 }
             });

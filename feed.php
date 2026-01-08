@@ -5,16 +5,20 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 require_once "conexao.php"; 
-
 // Busca publicações
 $sql = "SELECT 
-            p.titulo, p.caminho_arquivo, p.tipo_arquivo, p.data_publicacao,
-            p.id_publicacao, p.id_usuario_fk, p.descricao, u.nome AS nome_usuario
-        FROM publicacao p
-        JOIN usuario u ON p.id_usuario_fk = u.id_usuario
-        WHERE p.deleted_at IS NULL
-        ORDER BY p.data_publicacao DESC";
-
+            publicacao.titulo,
+            publicacao.caminho_arquivo,
+            publicacao.tipo_arquivo,
+            publicacao.data_publicacao,
+            publicacao.id_publicacao,
+            publicacao.id_usuario_fk,
+            publicacao.descricao,
+            usuario.nome AS nome_usuario
+        FROM publicacao
+        JOIN usuario ON publicacao.id_usuario_fk = usuario.id_usuario
+        WHERE publicacao.deleted_at IS NULL
+        ORDER BY publicacao.data_publicacao DESC";
 $resultado = mysqli_query($conexao, $sql);
 $publicacoes = [];
 if ($resultado) {
@@ -34,9 +38,7 @@ if ($resultado) {
 </head>
 <body>
     <?php include_once "header.php"; ?>
-
     <main class="container">
-
         <!-- MODAL SUCESSO EXCLUIR -->
         <div id="modal-sucesso" class="modal">
             <div class="modal-content center">
@@ -48,7 +50,6 @@ if ($resultado) {
                 <a href="#!" class="modal-close waves-effect btn-flat">OK</a>
             </div>
         </div>
-
         <!-- MODAL SUCESSO DENÚNCIA -->
         <div id="modal-denuncia-sucesso" class="modal">
             <div class="modal-content center">
@@ -60,7 +61,6 @@ if ($resultado) {
                 <a href="#!" class="modal-close waves-effect btn teal">OK</a>
             </div>
         </div>
-
         <!-- PUBLICAÇÕES -->
         <?php if (empty($publicacoes)): ?>
             <div class="card-panel center no-content">
@@ -74,9 +74,8 @@ if ($resultado) {
                     $caminho_arquivo = "uploads/" . $publicacao['caminho_arquivo'];
                     $thumbnail = "uploads/thumbnail_" . pathinfo($publicacao['caminho_arquivo'], PATHINFO_FILENAME) . ".jpg";
                     $data_formatada = date('d/m/Y', strtotime($publicacao['data_publicacao']));
-                    $is_dono = $publicacao['id_usuario_fk'] == $_SESSION['user_id'];
+                    $dono = $publicacao['id_usuario_fk'] == $_SESSION['user_id'];
                     $titulo_lower = strtolower($publicacao['titulo']);
-
                     // Verifica se já está salvo
                     $ja_salvo = false;
                     $check_salvo = mysqli_query($conexao, 
@@ -87,7 +86,6 @@ if ($resultado) {
                     ?>
                     <div class="feed-col col l4" style="padding: 0.75rem;" data-titulo="<?= $titulo_lower ?>">
                         <div class="card feed-card">
-
                             <!-- MÍDIA -->
                             <?php if ($publicacao['tipo_arquivo'] == 'imagem'): ?>
                                 <div class="feed-media-container">
@@ -110,7 +108,6 @@ if ($resultado) {
                                     </audio>
                                 </div>
                             <?php endif; ?>
-
                             <!-- CONTEÚDO -->
                             <div class="card-content-feed">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
@@ -127,11 +124,10 @@ if ($resultado) {
                                 <?php if (!empty($publicacao['descricao'])): ?>
                                     <p class="feed-description"><?= nl2br($publicacao['descricao']) ?></p>
                                 <?php endif; ?>
-
                                 <!-- AÇÕES NA PARTE INFERIOR -->
                                 <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
                                     <!-- BOTÃO DENUNCIAR (ESQUERDA) - redondo, só aparece se não for dono -->
-                                    <?php if (!$is_dono): ?>
+                                    <?php if (!$dono): ?>
                                     <a href="#modal-denuncia-<?= $publicacao['id_publicacao'] ?>" 
                                         class="modal-trigger"
                                         style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #fff3e0; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
@@ -155,16 +151,14 @@ if ($resultado) {
                             </div>
                         </div>
                     </div>
-
                     <!-- MODAL DENÚNCIA (centralizado) -->
-                    <?php if (!$is_dono): ?>
+                    <?php if (!$dono): ?>
                     <div id="modal-denuncia-<?= $publicacao['id_publicacao'] ?>" class="modal">
                         <!-- CORREÇÃO AQUI: Mudado de "administrador/denunciar.php" para "processa_denuncia.php" -->
                         <form action="processa_denuncia.php" method="POST">
                             <div class="modal-content">
                                 <h5 class="red-text text-darken-2">Denunciar publicação</h5>
                                 <p>Publicação: <strong><?= $publicacao['titulo'] ?></strong></p>
-
                                 <div class="input-field">
                                     <select name="categoria" required>
                                         <option value="" disabled selected>Escolha o motivo</option>
@@ -177,10 +171,8 @@ if ($resultado) {
                                         <option value="outros">Outro motivo</option>
                                     </select>
                                 </div>
-
                                 <input type="hidden" name="id_publicacao" value="<?= $publicacao['id_publicacao'] ?>">
                             </div>
-
                             <div class="modal-footer">
                                 <a href="#!" class="modal-close waves-effect btn-flat">Cancelar</a>
                                 <button type="submit" class="btn red waves-effect waves-light">Enviar denúncia</button>
@@ -188,9 +180,8 @@ if ($resultado) {
                         </form>
                     </div>
                     <?php endif; ?>
-
                     <!-- MODAL EXCLUIR -->
-                    <?php if ($is_dono): ?>
+                    <?php if ($dono): ?>
                         <div id="modal-delete-<?= $publicacao['id_publicacao'] ?>" class="modal">
                             <div class="modal-content">
                                 <h5>Excluir Publicação?</h5>
@@ -207,72 +198,64 @@ if ($resultado) {
                             </div>
                         </div>
                     <?php endif; ?>
-
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
     </main>
-
     <script type="text/javascript" src="js/materialize.min.js"></script>
-<script type="text/javascript" src="js/materialize.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inicializa TODOS os modais
-        var modals = document.querySelectorAll('.modal');
-        M.Modal.init(modals, {
-            opacity: 0.7,
-            inDuration: 300,
-            outDuration: 200,
-            preventScrolling: true,
-            dismissible: true
-        });
-
-        // Inicializa imagens grandes
-        M.Materialbox.init(document.querySelectorAll('.materialboxed'));
-
-        // Inicializa selects
-        M.FormSelect.init(document.querySelectorAll('select'));
-
-        // Abre modal de sucesso da denúncia
-        <?php if (isset($_GET['denuncia_ok'])): ?>
-            var sucesso = M.Modal.getInstance(document.getElementById('modal-denuncia-sucesso'));
-            if (sucesso) sucesso.open();
-        <?php endif; ?>
-
-        // Modal de sucesso da exclusão
-        <?php if (isset($_GET['success'])): ?>
-            var sucessoExcluir = M.Modal.getInstance(document.getElementById('modal-sucesso'));
-            if (sucessoExcluir) sucessoExcluir.open();
-        <?php endif; ?>
-    });
-
-    document.addEventListener('submit', function(e) {});
-    </script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
         <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Botão de curtir - mudança instantânea e simples (sem salvar no banco)
-    document.querySelectorAll('.curtir-btn').forEach(function(botao) {
-        botao.addEventListener('click', function() {
-            var texto = this.querySelector('.texto-botao');
-            var jaSalvo = this.getAttribute('data-salvo') === '1';
-
-            if (jaSalvo) {
-                // Descurtir
-                this.classList.remove('teal');
-                this.classList.add('grey', 'lighten-1');
-                texto.textContent = 'Curtir';
-                this.setAttribute('data-salvo', '0');
-            } else {
-                // Curtir
-                this.classList.remove('grey', 'lighten-1');
-                this.classList.add('teal');
-                texto.textContent = 'Curtido';
-                this.setAttribute('data-salvo', '1');
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializa TODOS os modais
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals, {
+                opacity: 0.7,
+                inDuration: 300,
+                outDuration: 200,
+                preventScrolling: true,
+                dismissible: true
+            });
+            // Inicializa imagens grandes
+            M.Materialbox.init(document.querySelectorAll('.materialboxed'));
+            // Inicializa selects
+            M.FormSelect.init(document.querySelectorAll('select'));
+            // Abre modal de sucesso da denúncia
+            <?php if (isset($_GET['denuncia_ok'])): ?>
+                var sucesso = M.Modal.getInstance(document.getElementById('modal-denuncia-sucesso'));
+                if (sucesso) sucesso.open();
+            <?php endif; ?>
+            // Modal de sucesso da exclusão
+            <?php if (isset($_GET['success'])): ?>
+                var sucessoExcluir = M.Modal.getInstance(document.getElementById('modal-sucesso'));
+                if (sucessoExcluir) sucessoExcluir.open();
+            <?php endif; ?>
+        });
+        document.addEventListener('submit', function(e) {});
+        </script>
+            <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Botão de curtir - mudança instantânea e simples (sem salvar no banco)
+        document.querySelectorAll('.curtir-btn').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                var texto = this.querySelector('.texto-botao');
+                var jaSalvo = this.getAttribute('data-salvo') === '1';
+                if (jaSalvo) {
+                    // Descurtir
+                    this.classList.remove('teal');
+                    this.classList.add('grey', 'lighten-1');
+                    texto.textContent = 'Curtir';
+                    this.setAttribute('data-salvo', '0');
+                } else {
+                    // Curtir
+                    this.classList.remove('grey', 'lighten-1');
+                    this.classList.add('teal');
+                    texto.textContent = 'Curtido';
+                    this.setAttribute('data-salvo', '1');
+                }
+            });
         });
     });
-});
-</script>
-        <?php include "footer.php"; ?>
+    </script>
+    <?php include "footer.php"; ?>
 </body>
 </html>
