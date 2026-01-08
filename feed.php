@@ -203,7 +203,6 @@ if ($resultado) {
         <?php endif; ?>
     </main>
     <script type="text/javascript" src="js/materialize.min.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializa TODOS os modais
