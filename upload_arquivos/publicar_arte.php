@@ -5,7 +5,6 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 require_once "../conexao.php";
-
 // Detecta sucesso (ex: processa_publicacao.php redireciona para esta página com ?success=1)
 $mostrar_sucesso = isset($_GET['success']) && $_GET['success'] == '1';
 ?>
