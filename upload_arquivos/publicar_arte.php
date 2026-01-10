@@ -73,7 +73,6 @@ $mostrar_sucesso = isset($_GET['success']) && $_GET['success'] == '1';
         </div>
     </div>
     <?php endif; ?>
-
     <script src="../js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
