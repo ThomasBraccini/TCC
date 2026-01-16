@@ -147,12 +147,22 @@ while ($registro = mysqli_fetch_assoc($result_publicacao)) {
     </div>
 </main>
 <!-- JS do Materialize -->
-<script src="../js/materialize.min.js"></script>
 <script>
-    // Inicializa componentes do Materialize
     document.addEventListener('DOMContentLoaded', function() {
         M.Tabs.init(document.querySelectorAll('.tabs'));
         M.Materialbox.init(document.querySelectorAll('.materialboxed'));
+        setTimeout(function() {
+            document.querySelectorAll('.tabs .tab a').forEach(function(link) {
+                link.style.color = '#00695c';                   
+                if (link.classList.contains('active')) {
+                    link.style.color = '#009688';               
+                }
+            });
+            const indicator = document.querySelector('.tabs .indicator');
+            if (indicator) {
+                indicator.style.backgroundColor = '#009688';
+            }
+        }, 150); 
     });
 </script>
 <?php include_once "../footer.php"; // Rodapé ?>

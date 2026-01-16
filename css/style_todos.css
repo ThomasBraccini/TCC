@@ -1,5 +1,30 @@
-/* FEED DE ARTES  */
-/* Card principal do feed - ocupa toda altura e usa flex para distribuição */
+/* PADRONIZAÇÃO VISUAL GLOBAL    */
+/* Títulos de seções (ex: PUBLICAÇÕES) */
+.section-title,
+.titulo-publicacoes,
+.page-section-title h5,
+.page-section-title h4 {
+    color: #009688;
+    font-weight: 600;
+}
+/* Linha abaixo de títulos */
+.section-title::after,
+.titulo-publicacoes::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    margin: 8px auto 0;
+    background-color: #009688;
+    border-radius: 2px;
+}
+/* Dividers padrão */
+.divider,
+hr {
+    border-color: #009688 !important;
+    background-color: #009688 !important;
+}
+/* FEED DE ARTES                 */
 .feed-card {
     height: 100%;
     display: flex;
@@ -10,22 +35,21 @@
     transition: transform 0.2s;
 }
 .feed-card:hover {
-    transform: translateY(-4px); /* Elevação suave ao passar o mouse */
+    transform: translateY(-4px);
 }
-/* Container da mídia (imagem, vídeo ou áudio) */
 .feed-media-container {
     position: relative;
     height: 300px;
     overflow: hidden;
     background: #000;
 }
-.feed-img, .feed-video {
+.feed-img,
+.feed-video {
     width: 100%;
     height: 300px;
     object-fit: cover;
     display: block;
 }
-/* Ícone de play sobre vídeos */
 .play-icon {
     position: absolute;
     top: 50%;
@@ -37,7 +61,6 @@
     text-shadow: 0 0 10px rgba(0,0,0,0.5);
     z-index: 1;
 }
-/* Conteúdo textual do card */
 .card-content-feed {
     flex-grow: 1;
     display: flex;
@@ -51,10 +74,9 @@
     margin: 0 0 0.5rem 0;
     line-height: 1.3;
 }
-/* Chip com nome do autor */
 .autor-chip {
     background: #00695c;
-    color: white;
+    color: #fff;
     font-weight: 500;
     font-size: 0.85rem;
     height: 28px;
@@ -63,7 +85,6 @@
     border-radius: 14px;
     display: inline-block;
 }
-/* Descrição com corte automático */
 .feed-description {
     flex-grow: 1;
     margin: 0.5rem 0;
@@ -73,7 +94,6 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
 }
-/* Botão de excluir - reserva espaço fixo para alinhar cards */
 .delete-btn {
     margin-top: 0.75rem;
     min-height: 42px;
@@ -85,13 +105,11 @@
     visibility: hidden;
     height: 36px;
 }
-/* Mensagem quando não há conteúdo */
 .no-content {
     text-align: center;
     padding: 3rem;
     color: #999;
 }
-/* Força 3 colunas em telas grandes */
 @media (min-width: 992px) {
     .feed-col {
         width: 33.333%;
@@ -99,7 +117,7 @@
         box-sizing: border-box;
     }
 }
-/* Estilo específico para áudio */
+/* ÁUDIO                         */
 .feed-audio-container {
     height: 300px;
     display: flex;
@@ -121,8 +139,7 @@
     border-radius: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-/* HEADER */
-/* Altura fixa da navbar */
+/* HEADER                        */
 nav {
     height: 64px;
     line-height: 64px;
@@ -131,7 +148,6 @@ nav .brand-logo {
     line-height: 64px;
     font-weight: 500;
 }
-/* Barra de busca centralizada */
 .search-wrapper {
     position: absolute;
     left: 50%;
@@ -147,14 +163,7 @@ nav .brand-logo {
     border: none;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-.search-wrapper i {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-}
-/* PÁGINA DE LOGIN */
+/* BASE                          */
 body {
     background: #f5f5f5;
     font-family: 'Roboto', sans-serif;
@@ -163,221 +172,7 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-/* Título principal da página de login */
-.title-nac {
-    background: #00897b;
-    color: white;
-    text-align: center;
-    padding: 1.5rem 0;
-    font-size: 2.2rem;
-    font-weight: 600;
-    margin: 0;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-/* Centralização do formulário de login */
-.login-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-}
-.login-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    width: 100%;
-    max-width: 420px;
-}
-.login-title {
-    font-size: 1.6rem;
-    font-weight: 500;
-    color: #00695c;
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-/* Botões e links da tela de login */
-.btn-login {
-    background: #00897b;
-    width: 100%;
-    height: 48px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 1.5rem 0;
-}
-.btn-login:hover {
-    background: #00695c;
-}
-.login-links a {
-    color: #00897b;
-    font-size: 0.95rem;
-    display: block;
-    margin: 0.5rem 0;
-}
-.login-links a:hover {
-    text-decoration: underline;
-}
-/* PÁGINA DE PUBLICAR ARTE */
-.upload-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-    min-height: calc(100vh - 140px);
-}
-.upload-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    width: 100%;
-    max-width: 560px;
-}
-.upload-title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: #00695c;
-    text-align: center;
-    margin-bottom: 2rem;
-}
-/* Botões da tela de upload */
-.btn-upload {
-    background: #00897b;
-    width: 100%;
-    height: 52px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 1.5rem;
-}
-.btn-upload:hover { background: #00695c; }
-.btn-cancel { background: #b0bec5 !important; color: #263238 !important; }
-.btn-cancel:hover { background: #90a4ae !important; }
-.file-field .btn { background: #00695c; }
-.file-field .btn:hover { background: #004d40; }
-/* Preview de mídia no upload */
-#preview-container { margin-top: 1rem; text-align: center; display: none; }
-#preview-img, #preview-video {
-    max-width: 100%;
-    max-height: 300px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.audio-preview {
-    width: 100%;
-    max-width: 400px;
-    height: 50px;
-    margin-top: 1rem;
-}
-/* CADASTRAR NOTÍCIAS*/
-.card-noticia {
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin-top: 30px;
-}
-.card-noticia .card-content { padding: 30px; }
-/* Destaque ao focar em campos */
-.input-field input[type=text]:focus,
-.input-field textarea:focus {
-    border-bottom: 2px solid #009688 !important;
-    box-shadow: 0 1px 0 0 #009688 !important;
-}
-/* Botões grandes arredondados */
-.btn-large {
-    border-radius: 30px;
-    padding: 0 40px;
-    font-weight: 600;
-    text-transform: none;
-    height: 50px;
-    line-height: 50px;
-}
-/*LISTAGEM E VISUALIZAÇÃO DE NOTÍCIAS */
-/* Card de notícia na listagem */
-.noticia-card {
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    height: 100%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-.noticia-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-/* Imagem da notícia */
-.noticia-imagem-container { height: 200px; overflow: hidden; position: relative; }
-.noticia-imagem {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-.noticia-card:hover .noticia-imagem { transform: scale(1.05); }
-/* Conteúdo textual */
-.noticia-conteudo {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 200px);
-}
-.noticia-titulo {
-    font-size: 1.2rem;
-    font-weight: 600;
-    line-height: 1.4;
-    margin-bottom: 10px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.noticia-subtitulo {
-    color: #666;
-    font-size: 0.95rem;
-    font-style: italic;
-    margin-bottom: 10px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.noticia-resumo {
-    color: #666;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    flex-grow: 1;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-/* Rodapé com data e metadados */
-.noticia-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-    font-size: 0.85rem;
-    color: #888;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-}
-/* Mensagem quando não há notícias */
-.no-noticias {
-    text-align: center;
-    padding: 60px 20px;
-}
-.no-noticias i {
-    font-size: 4rem;
-    color: #ccc;
-    margin-bottom: 20px;
-}
-/* Título da página */
-.page-title {
-    margin: 30px 0 40px;
-    text-align: center;
-}
+/* TÍTULOS DE PÁGINA             */
 .page-title h2 {
     font-weight: 300;
     color: #009688;

@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 require_once "../conexao.php";
-// Detecta sucesso (ex: processa_publicacao.php redireciona para esta página com ?success=1)
+// Detecta sucesso
 $mostrar_sucesso = isset($_GET['success']) && $_GET['success'] == '1';
 ?>
 <!DOCTYPE html>
@@ -21,28 +21,38 @@ $mostrar_sucesso = isset($_GET['success']) && $_GET['success'] == '1';
     <h1 class="title-nac">Publicar Nova Obra</h1>
     <div class="upload-container">
         <div class="upload-card">
+            <!-- AVISO DE DIREITOS AUTORAIS -->
+            <div class="card-panel teal lighten-5 grey-text text-darken-3"
+                style="margin-bottom: 1.5rem; padding: 1rem;">
+                <i class="material-icons left teal-text">info_outline</i>
+                <span style="font-size: 0.95rem;">
+                    Ao realizar uma publicação, o usuário declara ser o autor da obra ou possuir autorização para
+                    divulgá-la. O plágio configura crime conforme o
+                    <strong>Art. 184 do Código Penal Brasileiro</strong>, que trata da violação de direitos autorais.
+                </span>
+            </div>
             <h2 class="upload-title">Compartilhe sua Arte</h2>
             <form action="processa_publicacao.php" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <!-- TÍTULO -->
                     <div class="input-field col s12">
                         <input type="text" name="titulo" id="titulo" required maxlength="255" class="validate"
-                        placeholder="Título da Obra">
+                            placeholder="Título da Obra">
                     </div>
                     <!-- DESCRIÇÃO -->
                     <div class="input-field col s12">
                         <input type="text" name="descricao" id="descricao" required maxlength="500" class="validate"
-                        placeholder="Descrição da Obra">
+                            placeholder="Descrição da Obra">
                     </div>
                     <!-- ARQUIVO -->
                     <div class="file-field input-field col s12">
                         <div class="btn teal darken-1">
                             <span>Escolher arquivo</span>
-                            <input type="file" name="arquivo" required 
+                            <input type="file" name="arquivo" required
                                 accept="image/*,video/mp4,video/webm,audio/mpeg,audio/wav">
                         </div>
                         <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text" 
+                            <input class="file-path validate" type="text"
                                 placeholder="Nenhum arquivo selecionado">
                         </div>
                     </div>
@@ -51,7 +61,9 @@ $mostrar_sucesso = isset($_GET['success']) && $_GET['success'] == '1';
                         <button type="submit" class="btn waves-effect waves-light btn-upload">
                             Publicar Obra
                         </button>
-                        <a href="../meu_perfil/meu_perfil.php" class="btn waves-effect waves-light btn-cancel" style="margin-top: 2rem; text-align: center;">
+                        <a href="../meu_perfil/meu_perfil.php"
+                            class="btn waves-effect waves-light btn-cancel"
+                            style="margin-top: 2rem;">
                             Cancelar
                         </a>
                     </div>
@@ -68,22 +80,22 @@ $mostrar_sucesso = isset($_GET['success']) && $_GET['success'] == '1';
             <p>Sua obra foi publicada e está disponível no feed.</p>
         </div>
         <div class="modal-footer">
-            <a href="../feed.php" class="modal-close waves-effect waves-green btn-flat">Ir para o Feed</a>
+            <a href="../feed.php" class="modal-close waves-effect waves-green btn-flat">
+                Ir para o Feed
+            </a>
         </div>
     </div>
     <?php endif; ?>
     <script src="../js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializa componentes do Materialize
             M.AutoInit();
             <?php if ($mostrar_sucesso): ?>
-                // Inicializa e abre o modal de sucesso de forma robusta
-                var elem = document.getElementById('modalSucesso');
-                if (elem) {
-                    var instance = M.Modal.init(elem, { dismissible: false });
-                    instance.open();
-                }
+            var elem = document.getElementById('modalSucesso');
+            if (elem) {
+                var instance = M.Modal.init(elem, { dismissible: false });
+                instance.open();
+            }
             <?php endif; ?>
         });
     </script>

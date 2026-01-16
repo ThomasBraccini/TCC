@@ -23,7 +23,11 @@ if (!in_array($extensao, $tiposPermitidos)) {
     exit;
 }
 // Tamanho máximo
-$tamanhoMaximo = in_array($extensao, ["mp4", "avi"]) ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+if (in_array($extensao, ["mp4", "avi"])) {
+    $tamanhoMaximo = 50 * 1024 * 1024;  // 50 MB
+} else {
+    $tamanhoMaximo = 10 * 1024 * 1024;  // 10 MB
+}
 if ($_FILES["arquivo"]['size'] > $tamanhoMaximo) {
     header("Location: publicar_arte.php?error=Arquivo muito grande");
     exit;
