@@ -11,23 +11,26 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Cadastrar no NAC Portal</title>
+    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="../css/materialize.min.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="../css/style_todos.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/style_todos.css?v=<?= time() ?>" /> <!-- cache buster -->
 </head>
 <body>
     <h1 class="title-nac">NAC Portal</h1>
-    <!-- Mensagem de erro vinda da URL (?error=...) -->
+    <!-- Mensagem de erro -->
     <?php if (isset($_GET['error'])): ?>
         <div class="container">
-                <?= $_GET['error']?>
+            <div class="card-panel red lighten-4 red-text text-darken-2 center-align" style="max-width: 480px; margin: 25px auto; padding: 20px;">
+                <?= htmlspecialchars($_GET['error']) ?>
             </div>
         </div>
     <?php endif; ?>
-    <!-- Mensagem de sucesso vinda da URL -->
+    <!-- Mensagem de sucesso -->
     <?php if (isset($_GET['success'])): ?>
         <div class="container">
-                <?= $_GET['success'] ?>
+            <div class="card-panel green lighten-4 green-text text-darken-2 center-align" style="max-width: 480px; margin: 25px auto; padding: 20px;">
+                <?= htmlspecialchars($_GET['success']) ?>
             </div>
         </div>
     <?php endif; ?>
@@ -36,53 +39,53 @@ if (isset($_SESSION['user_id'])) {
             <h2 class="login-title">Criar Conta</h2>
             <form action="processa_registro.php" method="POST" enctype="multipart/form-data">
                 <div class="row">
-                    <!-- Campo Nome de Usuário -->
+                    <!-- Nome de Usuário -->
                     <div class="input-field col s12">
-                        <input type="text" name="nome" id="nome" required class="validate" maxlength="150" 
+                        <input type="text" name="nome" id="nome" required class="validate" maxlength="150"
                             placeholder="Nome de Usuário">
-                        <label for="nome">Nome de Usuário:</label>
+                        <label for="nome">Nome de Usuário</label>
                     </div>
-                    <!-- Campo E-mail -->
+                    <!-- E-mail -->
                     <div class="input-field col s12">
                         <input type="email" name="email" id="email" required class="validate" maxlength="255"
-                            placeholder="seu.email@aluno.iffar.edu.br">
+                            placeholder="seu.email@iffarroupilha.edu.br">
                         <label for="email">E-mail</label>
-                        <span id="erro-email" style="color:red; font-size:13px;"></span> <!-- Mensagem de erro em tempo real -->
+                        <span id="erro-email" style="color:red; font-size:13px;"></span>
                     </div>
-                    <!-- Campo Senha -->
+                    <!-- Senha -->
                     <div class="input-field col s12">
                         <input type="password" name="senha" id="senha" required class="validate" minlength="8"
-                            placeholder="Senha">
-                        <label for="senha">Senha (mín. 8 caracteres)</label>
+                            placeholder="Senha (mín. 8 caracteres)">
+                        <label for="senha">Senha</label>
                         <span id="erro-senha" style="color:red; font-size:13px;"></span>
                     </div>
-                    <!-- Confirmação de Senha -->
+                    <!-- Confirmar Senha -->
                     <div class="input-field col s12">
                         <input type="password" name="confirma_senha" id="confirma_senha" required class="validate" minlength="8"
-                            placeholder="Confirmar Senha">
+                            placeholder="Confirme a senha">
                         <label for="confirma_senha">Confirmar Senha</label>
                         <span id="erro-confirma" style="color:red; font-size:13px;"></span>
                     </div>
-                    <!-- Campo Bio (opcional) -->
+                    <!-- Bio (opcional) -->
                     <div class="input-field col s12">
                         <textarea name="preferencias" id="preferencias" class="materialize-textarea validate"
-                                placeholder="O que você gosta..."></textarea>
-                        <label for="preferencias">Bio</label>
+                                placeholder="Conte um pouco sobre você..."></textarea>
+                        <label for="preferencias">Bio (opcional)</label>
                     </div>
-                    <!-- Upload de foto de perfil -->
+                    <!-- Upload Foto de Perfil -->
                     <div class="file-field input-field col s12">
                         <div class="btn btn-login">
-                            <span>Foto</span>
-                            <input type="file" name="foto_perfil" accept="image/*"> <!-- Aceita apenas imagens -->
+                            <span>Foto de Perfil</span>
+                            <input type="file" name="foto_perfil" accept="image/*">
                         </div>
                         <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text" placeholder="Escolha uma foto">
+                            <input class="file-path validate" type="text" placeholder="Nenhuma foto selecionada">
                         </div>
                     </div>
-                    <!-- Botão de envio do formulário -->
+                    <!-- Botão Cadastrar -->
                     <div class="col s12">
                         <button type="submit" class="btn waves-effect waves-light btn-login">
-                            Cadastrar
+                            CADASTRAR
                         </button>
                     </div>
                 </div>
@@ -92,66 +95,56 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
-    <!-- Modal exibido quando o e-mail já existe -->
+    <!-- Modal: E-mail já existe -->
     <div id="modalEmailExistente" class="modal">
         <div class="modal-content">
             <h4>Atenção</h4>
-            <p>O e-mail informado já está cadastrado em nosso sistema.</p>
+            <p>O e-mail informado já está cadastrado. Use outro ou faça login.</p>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close btn teal">Entendi</a>
+            <a href="#!" class="modal-close waves-effect waves-light btn teal">Entendi</a>
         </div>
     </div>
-    <!-- Modal: Código de verificação enviado -->
+    <!-- Modal: Código enviado -->
     <div id="modalCodigoEnviado" class="modal">
         <div class="modal-content">
             <h4>Cadastro iniciado</h4>
             <p>Código enviado! Verifique seu e-mail para concluir o cadastro.</p>
         </div>
         <div class="modal-footer">
-            <a href="verificar_email.php" class="modal-close btn teal">OK</a>
+            <a href="verificar_email.php" class="modal-close waves-effect waves-light btn teal">OK</a>
         </div>
     </div>
-    <!-- Inicializa modais do Materialize -->
+    <!-- Scripts -->
+    <script type="text/javascript" src="../js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.modal');
-            M.Modal.init(elems);
+            M.AutoInit(); // Inicializa modais, textareas, etc.
+            M.updateTextFields(); // Atualiza labels flutuantes
+            M.textareaAutoResize(document.getElementById('preferencias'));
+            // Abre modais automaticamente se vierem na URL
             <?php if (isset($_GET['email_existente'])): ?>
-                M.Modal.getInstance(
-                    document.getElementById('modalEmailExistente')
-                ).open();
+                M.Modal.getInstance(document.getElementById('modalEmailExistente')).open();
             <?php endif; ?>
             <?php if (isset($_GET['success'])): ?>
-                M.Modal.getInstance(
-                    document.getElementById('modalCodigoEnviado')
-                ).open();
+                M.Modal.getInstance(document.getElementById('modalCodigoEnviado')).open();
             <?php endif; ?>
-        });
-    </script>
-    <!-- Carrega o JavaScript do Materialize -->
-    <script type="text/javascript" src="../js/materialize.min.js"></script>
-    <!-- Validação básica antes do envio -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            M.updateTextFields(); // Atualiza labels dos campos
-            M.textareaAutoResize(document.getElementById('preferencias'));
+            // Validação no submit (senhas iguais e tamanho mínimo)
             const form = document.querySelector('form');
             const senha = document.getElementById('senha');
             const confirma = document.getElementById('confirma_senha');
-            // Impede envio se as senhas não baterem ou forem curtas
             form.addEventListener('submit', function(e) {
                 if (senha.value !== confirma.value) {
                     e.preventDefault();
-                    M.toast({html: 'As senhas não coincidem!', classes: 'red'});
+                    M.toast({html: 'As senhas não coincidem!', classes: 'red rounded'});
                 } else if (senha.value.length < 8) {
                     e.preventDefault();
-                    M.toast({html: 'A senha deve ter no mínimo 8 caracteres!', classes: 'red'});
+                    M.toast({html: 'Senha deve ter no mínimo 8 caracteres!', classes: 'red rounded'});
                 }
             });
         });
     </script>
-    <!-- Validação em tempo real enquanto o usuário digita -->
+    <!-- Validação em tempo real -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const email = document.getElementById("email");
@@ -160,23 +153,19 @@ if (isset($_SESSION['user_id'])) {
             const erroEmail = document.getElementById("erro-email");
             const erroSenha = document.getElementById("erro-senha");
             const erroConfirma = document.getElementById("erro-confirma");
-            // Verifica formato do e-mail
+            // E-mail válido
             email.addEventListener("input", function() {
-                const valido = email.checkValidity();
-                erroEmail.textContent = valido ? "" : "E-mail inválido";
+                erroEmail.textContent = email.checkValidity() ? "" : "E-mail inválido";
             });
-            // Verifica tamanho mínimo da senha
+            // Senha mínima
             senha.addEventListener("input", function() {
                 erroSenha.textContent = senha.value.length < 8 ? 
-                    "A senha deve ter no mínimo 8 caracteres" : "";
+                    "Mínimo 8 caracteres" : "";
             });
-            // Compara as duas senhas
+            // Confirmação
             function validarSenhas() {
-                if (senha.value !== confirma.value) {
-                    erroConfirma.textContent = "As senhas não conferem";
-                } else {
-                    erroConfirma.textContent = "";
-                }
+                erroConfirma.textContent = (senha.value && confirma.value && senha.value !== confirma.value) 
+                    ? "As senhas não conferem" : "";
             }
             senha.addEventListener("input", validarSenhas);
             confirma.addEventListener("input", validarSenhas);
