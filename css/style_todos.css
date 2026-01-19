@@ -416,3 +416,10 @@ body {
     max-width: 100% !important;
     width: 100% !important;
 }
+/*editar perfil*/
+.title-nac {
+    font-size: 2.8rem !important;
+}
+.upload-card {
+    max-width: 520px !important;
+}

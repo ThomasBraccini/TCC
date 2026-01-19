@@ -14,17 +14,21 @@ if (isset($_SESSION['user_id'])) {
     
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="../css/materialize.min.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="../css/style_todos.css?v=<?= time() ?>" /> <!-- cache buster temporário -->
+    <link type="text/css" rel="stylesheet" href="../css/style_todos.css?v=<?php echo time(); ?>" />
 </head>
 <body>
     <h1 class="title-nac">NAC Portal</h1>
-    <?php if (isset($_GET['error'])): ?>
+    <?php
+    if (isset($_GET['error'])) {
+    ?>
         <div class="container">
             <div class="card-panel red lighten-4 red-text text-darken-2 center-align" style="max-width: 480px; margin: 20px auto;">
-                <?= htmlspecialchars($_GET['error']) ?>
+                <?php echo $_GET['error']; ?>
             </div>
         </div>
-    <?php endif; ?>
+    <?php
+    }
+    ?>
     <div class="login-container">
         <div class="login-card">
             <h2 class="login-title">Recuperar Senha</h2>
@@ -34,13 +38,11 @@ if (isset($_SESSION['user_id'])) {
             </p>
             <form action="processa_esqueci_senha.php" method="POST">
                 <div class="row">
-                    <!-- CAMPO EMAIL -->
                     <div class="input-field col s12">
                         <input type="email" name="email" id="email" required class="validate"
                             placeholder="seu.email@iffarroupilha.edu.br">
                         <label for="email">E-mail</label>
                     </div>
-                    <!-- BOTÃO -->
                     <div class="col s12">
                         <button type="submit" class="btn waves-effect waves-light btn-login">
                             ENVIAR LINK DE RECUPERAÇÃO
@@ -48,13 +50,11 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
             </form>
-            <!-- LINK VOLTAR -->
             <div class="login-links">
                 <a href="../index.php">Voltar para o login</a>
             </div>
         </div>
     </div>
-    <!-- MODAL SUCESSO -->
     <div id="modalSucesso" class="modal">
         <div class="modal-content center">
             <i class="material-icons large green-text">check_circle</i>
@@ -69,18 +69,16 @@ if (isset($_SESSION['user_id'])) {
             </a>
         </div>
     </div>
-    <!-- Scripts -->
     <script type="text/javascript" src="../js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            M.AutoInit();  // Inicializa todos os componentes Materialize
-            // Abre modal de sucesso automaticamente se ?success=1
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('success') === '1') {
-                const modal = M.Modal.getInstance(document.getElementById('modalSucesso'));
+            M.AutoInit();
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('success') == '1') {
+                var modal = M.Modal.getInstance(document.getElementById('modalSucesso'));
                 modal.open();
             }
         });
     </script>
-</boy>
+</body>
 </html>
